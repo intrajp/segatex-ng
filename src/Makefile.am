@@ -1,3 +1,5 @@
+# Makefile.am - use automake to generate Makefile.in
+
 bin_PROGRAMS = segatex-ng
 
 AM_CXFLAGS = $(INIT_CFLAGS)
