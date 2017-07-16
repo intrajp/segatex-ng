@@ -1,0 +1,36 @@
+This document tries to describe the software layout and design of
+nss-pam-ldapd. It should provide some help for contributing code to this
+package.
+
+CONTRIBUTING TO SEGATEX-NG 
+=============================
+
+Contributions to segatex-ng are most welcome. Integrating contributions
+will be done on a best-effort basis and can be made easier if the following
+are considered:
+
+Please email shintaro.fujiwara@gmail.com if you want to contribute. 
+All contributions will be acknowledged in the AUTHORS file.
+
+BUILD DEPENDENCIES
+==================
+
+For building Git snapshots the following tools are needed:
+
+* autoconf
+* automake
+* libselinux
+
+
+RELEASE VERSIONING
+==================
+
+The versioning scheme of segatex-ng is a simple major.minor.micro
+numbering. The idea is to keep a stable (x.y) branch that only gets bug fixes
+and small enhancements while development goes in another branch. Backwards
+incompatible changes should be announced clearly.
+
+GENERAL DESIGN
+==============
+To know SELinux well in general.
+If possible, help people to organize SELinux system.

@@ -1,0 +1,3 @@
+ctest2.o: ctest2.c /usr/include/stdc-predef.h
+
+/usr/include/stdc-predef.h:
