@@ -1,5 +1,5 @@
 /*
-   main.c - main file for segatex-ng.
+   cfg.h - definition of configuration information
    This file contains the contents of segatex-ng.
 
    Copyright (C) 2017 Shintaro Fujiwara
@@ -20,24 +20,22 @@
    02110-1301 USA
 */
 
-#include <stdio.h>
-#include "main.h"
-#include "cfg.c"
+#ifndef CFG_H
+#define CFG_H
 
-int main(void)
+struct segatex_ng_config
 {
-    int i;
-    const char *fname;
-    fname = "/etc/segatex-ng.conf";
+  /* the number of threads to start */
+  int ldc_threads;
+};
 
-    i = is_selinux_enabled();
+/* this is a pointer to the global configuration, it should be available
+   once cfg_init() was called */
+extern struct segatex_ng_config *segatex_cfg;
 
-    if (i = 1)
-        printf("SELinux is enabled.\n");
-    else
-        printf("SELinux is not enabled.\n");
+/* Initialize the configuration in segatex_cfg. This method
+   will read the default configuration file and call exit()
+   if an error occurs. */
+void cfg_init(const char *fname);
 
-    cfg_init(fname);
-
-    return 0;
-}
+#endif /* CFG_H */
