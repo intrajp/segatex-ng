@@ -1,4 +1,20 @@
-   segatexd - console program for SELinux
+   segatex-ng daemon name segatexd - console program for SELinux
+
+   In 2006, segatex was born to help SELinux system administration.
+   It is written with C++ and Qt3 originally.
+   Although segatex is maintained untill 2017, it became harder to
+   catch up the new Qt version.
+
+   In 2017, the author, Shintaro Fujiwara, decided to write console
+   program of segatex, and started search for good base program.
+   "segatex-ng" means "segatex next generation".
+
+   He found "nss-pam-ldapd" written by Arthur de Jong of West Consuling
+   is a excellent program, so decided to borrow codes from it. 
+   Although segatex-ng is not concerned about LDAP, its code style is
+   the ones of the original program. 
+
+   segatex-ng is a program for sysadmins using SELinux in everyday work.
 
    Copyright (C) 2017 Shintaro Fujiwara
 
