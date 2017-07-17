@@ -23,6 +23,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+/* this is a function of libselinux */
 int is_selinux_enabled();
 
 #endif

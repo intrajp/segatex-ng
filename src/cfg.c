@@ -38,7 +38,7 @@ struct segatex_ng_config *segatex_cfg=NULL;
 static void cfg_defaults(struct segatex_ng_config *cfg)
 {
   //for debug
-  printf("cfg_defaults was called !\n");
+  //printf("cfg_defaults was called !\n");
 
   memset(cfg,0,sizeof(struct segatex_ng_config));
   cfg->ldc_threads=5;
@@ -101,6 +101,7 @@ static void get_eol(const char *filename,int lnr,
   if ((line!=NULL)&&(*line!=NULL)&&(**line!='\0'))
   {
     //log_log(LOG_ERR,"%s:%d: %s: too may arguments",filename,lnr,keyword);
+    printf("%s:%d: %s: too many arguments\n",filename,lnr,keyword);
     exit(EXIT_FAILURE);
   }
 }
@@ -121,6 +122,7 @@ static void cfg_read(const char *filename,struct segatex_ng_config *cfg)
   if ((fp=fopen(filename,"r"))==NULL)
   {
     //log_log(LOG_ERR,"cannot open config file (%s): %s",filename,strerror(errno));
+    printf("cannot open config file %s\n",filename);
     exit(EXIT_FAILURE);
   }
   /* read file and parse lines */
@@ -133,6 +135,7 @@ static void cfg_read(const char *filename,struct segatex_ng_config *cfg)
     if ((i<=0)||(line[i-1]!='\n'))
     {
       //log_log(LOG_ERR,"%s:%d: line too long or last line missing newline",filename,lnr);
+      printf("%s:%d:  line too long or last line missing newline\n",filename,lnr);
       exit(EXIT_FAILURE);
     }
     line[i-1]='\0';
@@ -155,6 +158,7 @@ static void cfg_read(const char *filename,struct segatex_ng_config *cfg)
     else
     {
       //log_log(LOG_ERR,"%s:%d: unknown keyword: '%s'",filename,lnr,keyword);
+      printf("%s:%d: unknown keyword: '%s'\n",filename,lnr,keyword);
       exit(EXIT_FAILURE);
     }
   }
@@ -164,11 +168,13 @@ static void cfg_read(const char *filename,struct segatex_ng_config *cfg)
 
 void cfg_init(const char *fname)
 {
-  printf("cfg_init was called !\n");
+  //for debug
+  //printf("cfg_init was called !\n");
   /* check if we were called before */
   if (segatex_cfg!=NULL)
   {
     //log_log(LOG_CRIT,"cfg_init() may only be called once");
+    printf("cfg_init() may only be called once\n");
     exit(EXIT_FAILURE);
   }
   /* allocate the memory (this memory is not freed anywhere) */
@@ -176,6 +182,7 @@ void cfg_init(const char *fname)
   if (segatex_cfg==NULL)
   {
     //log_log(LOG_CRIT,"malloc() failed to allocate memory");
+    printf("malloc() failed to allocate memory\n");
     exit(EXIT_FAILURE);
   }
   /* clear configuration */
