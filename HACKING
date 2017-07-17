@@ -33,6 +33,7 @@ $ make
 Shipping the contents of .tar.gz as done by this command.
 $ make dist 
 
+https://sourceforge.net/projects/segatex-ng/
 
 RELEASE VERSIONING
 ==================
