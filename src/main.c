@@ -36,7 +36,7 @@ int main(void)
         printf("SELinux is enabled.\n");
     else
         printf("SELinux is not enabled.\n");
-
+    /* Initialize the conf file reading procedure. */
     cfg_init(fname);
 
     return 0;

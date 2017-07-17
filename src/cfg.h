@@ -25,8 +25,8 @@
 
 struct segatex_ng_config
 {
-  /* the number of threads to start */
-  int ldc_threads;
+    /* the number of threads to start */
+    int sgx_threads;
 };
 
 /* this is a pointer to the global configuration, it should be available
@@ -36,6 +36,7 @@ extern struct segatex_ng_config *segatex_cfg;
 /* Initialize the configuration in segatex_cfg. This method
    will read the default configuration file and call exit()
    if an error occurs. */
+/* This function could be called anywhere, so declared here. */
 void cfg_init(const char *fname);
 
 #endif /* CFG_H */
