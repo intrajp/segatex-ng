@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <ctype.h>
 
 #include "cfg.h"
@@ -36,6 +37,7 @@ struct segatex_ng_config *segatex_cfg=NULL;
 
 /* set the configuration information to the defaults */
 /* This function is only called from this file, so set static.*/
+
 static void cfg_defaults(struct segatex_ng_config *cfg)
 {
     //for debug
@@ -45,16 +47,34 @@ static void cfg_defaults(struct segatex_ng_config *cfg)
     cfg->sgx_threads=5;
 }
 
+
+/* check that the condition is true and otherwise log an error
+   and bail out */
+
+static inline void check_argumentcount(const char *filename, int lnr,
+                                       const char *keyword, int condition)
+{
+    if (!condition)
+    {
+        printf("%s:%d: %s: wrong number of arguments",
+                filename, lnr, keyword);
+        //log_log(LOG_ERR, "%s:%d: %s: wrong number of arguments",
+        //        filename, lnr, keyword);
+        exit(EXIT_FAILURE);
+    }
+}
+
 /* This function works like strtok() except that the original string is
    not modified and a pointer within str to where the next token begins
    is returned (this can be used to pass to the function on the next
    iteration). If no more tokens are found or the token will not fit in
    the buffer, NULL is returned. */
 /* This function is only called from this file, so set static.*/
+
 static char *get_token(char **line,char *buf,size_t buflen)
 {
     //for debug
-    printf("get_token was called !\n");
+    //printf("get_token was called !\n");
 
     size_t len;
     if ((line==NULL)||(*line==NULL)||(**line=='\0')||(buf==NULL))
@@ -71,9 +91,13 @@ static char *get_token(char **line,char *buf,size_t buflen)
     /* limit the token length */
     if (len>=buflen)
         len=buflen-1;
+    //for debug
+    //printf("len is %d\n",len);
     /* copy the token */
     strncpy(buf,*line,len);
     buf[len]='\0';
+    //for debug
+    //printf("buf is %s\n",buf);
     /* skip to the next token */
     *line+=len;
     *line+=strspn(*line,TOKEN_DELIM);
@@ -83,25 +107,30 @@ static char *get_token(char **line,char *buf,size_t buflen)
 }
 
 /* This function is only called from this file, so set static.*/
-static void get_int(const char *filename,int lnr,
-                    const char *keyword,char **line,
-                    int *var)
-{
-    //for debug
-    printf("get_init was called !\n");
 
-    /* TODO: refactor to have less overhead */
+static int get_int(const char *filename, int lnr,
+                    const char *keyword, char **line)
+{
     char token[32];
+    //for debug
+    //printf("get_init was called !\n");
+    //printf("filename is %s\n", filename);
+    //printf("lnr is %d\n", lnr);
+    //printf("keyword is %s\n", keyword);
+    //printf("line is %s\n", *line);
+    check_argumentcount(filename, lnr, keyword,
+                    get_token(line, token, sizeof(token)) != NULL);
     /* TODO: replace with correct numeric parse */
-    *var=atoi(token);
+    return atoi(token);
 }
 
 /* This function is only called from this file, so set static.*/
+
 static void get_eol(const char *filename,int lnr,
                     const char *keyword,char **line)
 {
     //for debug
-    printf("get_eol was called !\n");
+    //printf("get_eol was called !\n");
 
     if ((line!=NULL)&&(*line!=NULL)&&(**line!='\0'))
     {
@@ -112,10 +141,11 @@ static void get_eol(const char *filename,int lnr,
 }
 
 /* This function is only called from this file, so set static.*/
+
 static void cfg_read(const char *filename,struct segatex_ng_config *cfg)
 {
     //for debug
-    printf("cfg_read was called !\n");
+    //printf("cfg_read was called !\n");
 
     FILE *fp;
     int lnr=0;
@@ -152,28 +182,32 @@ static void cfg_read(const char *filename,struct segatex_ng_config *cfg)
         for (i--;(i>0)&&isspace(line[i-1]);i--)
             line[i-1]='\0';
         /* get keyword from line and ignore empty lines */
-        if (get_token(&line,keyword,sizeof(keyword))==NULL)
+        if (get_token(&line, keyword, sizeof(keyword)) == NULL)
             continue;
+        //for debug
+        //printf("keyword is %s\n",keyword);
         /* runtime options */
-        if (strcasecmp(keyword,"threads")==0)
+        if (strcasecmp(keyword,"sgx_threads")==0)
         {
-            get_int(filename,lnr,keyword,&line,&cfg->sgx_threads);
-            get_eol(filename,lnr,keyword,&line);
+            cfg->sgx_threads = get_int(filename, lnr, keyword, &line);
+            get_eol(filename, lnr, keyword, &line);
         }
         /* fallthrough */
         else
         {
             //log_log(LOG_ERR,"%s:%d: unknown keyword: '%s'",filename,lnr,keyword);
-            printf("cfg_init() may only be called once\n");
             printf("%s:%d: unknown keyword: '%s'\n",filename,lnr,keyword);
             exit(EXIT_FAILURE);
         }
     }
+    //for debug
+    printf("cfg->sgx_threads is %d\n",cfg->sgx_threads);
     /* we're done reading file, close */
     fclose(fp);
 }
 
 /* This function is called anywhere, so not set static.*/
+
 void cfg_init(const char *fname)
 {
     //for debug
