@@ -21,6 +21,18 @@ For building Git snapshots the following tools are needed:
 * automake
 * libselinux
 
+The segatexd uses autoconf and automake for building.
+This is how I do the building right now.
+
+$ aclocal
+$ auconf
+$ automake --add-missing
+$ ./configure
+$ make 
+
+Shipping the contents of .tar.gz as done by this command.
+$ make dist 
+
 
 RELEASE VERSIONING
 ==================

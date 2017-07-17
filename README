@@ -1,4 +1,4 @@
-   segatex-ng - console program for SELinux
+   segatexd - console program for SELinux
 
    Copyright (C) 2017 Shintaro Fujiwara
 
@@ -19,38 +19,38 @@
 
 HOW TO BUILD
 ==================
+segatex-ng uses autoconf and automake for building. Installing
+segatexd should be as simple as:
 
-The segatex-ng uses autoconf and automake for building.
-
-$ aclocal
-$ auconf
-$ automake --add-missing
+  $ ./configure [options]
+  $ make
+  # make install
 
 It is a good idea to first go through the options of configure by running:
 
-$ ./configure --help
-
-So, easy as this.
-
-$ ./configure [options]
-$ make
+  $ ./configure --help
 
 INSTALLATION
 ============
 
-# make install
+  # make install
+
+UINSTALLATION
+============
+
+  # make uninstall
 
 HOW TO USE 
 ==================
 
-segatex-ng
+  $ segatex-ng
 
 CONFIGURATION
 =============
 
-No configuration.
+  /etc/segatex-ng.conf
 
 REPORTING BUGS
 ==============
 
-Email to <shintaro.fujiwara@gmai.com>
+  Email to <shintaro.fujiwara@gmai.com>
