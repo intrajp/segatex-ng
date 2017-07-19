@@ -24,10 +24,11 @@
 #include <string.h>
 #include <strings.h>
 #include <ctype.h>
+#include <syslog.h>
 
 #include "cfg.h"
 
-struct segatex_ng_config *segatex_cfg=NULL;
+struct segatex_ng_config *segatexd_cfg=NULL;
 
 /* the maximum line length in the configuration file */
 #define MAX_LINE_LENGTH          4096
@@ -159,6 +160,7 @@ static void cfg_read(const char *filename,struct segatex_ng_config *cfg)
     {
         //log_log(LOG_ERR,"cannot open config file (%s): %s",filename,strerror(errno));
         printf("cannot open config file %s\n",filename);
+        syslog(LOG_INFO,"cannot open config file %s\n",filename);
         exit(EXIT_FAILURE);
     }
     /* read file and parse lines */
@@ -213,22 +215,22 @@ void cfg_init(const char *fname)
     //for debug
     //printf("cfg_init was called !\n");
     /* check if we were called before */
-    if (segatex_cfg!=NULL)
+    if (segatexd_cfg!=NULL)
     {
         //log_log(LOG_CRIT,"cfg_init() may only be called once");
         printf("cfg_init() may only be called once\n");
         exit(EXIT_FAILURE);
     }
     /* allocate the memory (this memory is not freed anywhere) */
-    segatex_cfg=(struct segatex_ng_config *)malloc(sizeof(struct segatex_ng_config));
-    if (segatex_cfg==NULL)
+    segatexd_cfg=(struct segatex_ng_config *)malloc(sizeof(struct segatex_ng_config));
+    if (segatexd_cfg==NULL)
     {
         //log_log(LOG_CRIT,"malloc() failed to allocate memory");
         printf("malloc() failed to allocate memory\n");
         exit(EXIT_FAILURE);
     }
     /* clear configuration */
-    cfg_defaults(segatex_cfg);
+    cfg_defaults(segatexd_cfg);
     /* read configfile */
-    cfg_read(fname,segatex_cfg);
+    cfg_read(fname,segatexd_cfg);
 }

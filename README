@@ -1,22 +1,18 @@
-   segatex-ng daemon name segatexd - console program for SELinux
+   segatex-ng daemon name segatexd - console program for SELinux 
 
-   In 2006, segatex was born to help SELinux system administration.
-   It is written with C++ and Qt3 originally.
-   Although segatex is maintained untill 2017, it became harder to
-   catch up the new Qt version.
+   In 2006, segatex was born to help SELinux system administration.  
+   It is written with C++ and Qt3 originally.  Although segatex is maintained untill 2017, 
+   it became harder to catch up the new Qt version.  
+   In 2017, the author, Shintaro Fujiwara, decided to write console program of segatex, 
+   and started search for good base program.  "segatex-ng" means "segatex next generation".  
+   He found "nss-pam-ldapd" written by Arthur de Jong of West Consuling is a excellent program, 
+   so decided to borrow codes from it.  
+   Although segatex-ng is not concerned about LDAP, its code style is the ones of the original program.  
 
-   In 2017, the author, Shintaro Fujiwara, decided to write console
-   program of segatex, and started search for good base program.
-   "segatex-ng" means "segatex next generation".
+   segatex-ng is a program for sysadmins using SELinux in everyday work.  
+   segatexd is segatex-ng's daemon name.
 
-   He found "nss-pam-ldapd" written by Arthur de Jong of West Consuling
-   is a excellent program, so decided to borrow codes from it. 
-   Although segatex-ng is not concerned about LDAP, its code style is
-   the ones of the original program. 
-
-   segatex-ng is a program for sysadmins using SELinux in everyday work.
-
-   Copyright (C) 2017 Shintaro Fujiwara
+   Copyright (C) 2017 Shintaro Fujiwara 
 
    This software is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -35,7 +31,7 @@
 
 HOW TO BUILD
 ==================
-segatex-ng uses autoconf and automake for building. Installing
+segatexd uses autoconf and automake for building. Installing
 segatexd should be as simple as:
 
   $ ./configure [options]
@@ -59,14 +55,14 @@ UINSTALLATION
 HOW TO USE 
 ==================
 
-  # segatex-ng
+  # segatexd
 
   Only root can use this program.
 
 CONFIGURATION
 =============
 
-  /etc/segatex-ng.conf
+  /etc/segatexd.conf
 
   File permission is set 600.
 

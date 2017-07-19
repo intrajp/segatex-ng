@@ -1,5 +1,5 @@
 /*
-   cfg.h - definition of configuration information
+   segatexd.h - definition of segatexd information
    This file contains the contents of segatex-ng.
 
    Copyright (C) 2017 Shintaro Fujiwara
@@ -20,23 +20,9 @@
    02110-1301 USA
 */
 
-#ifndef CFG_H
-#define CFG_H
+#ifndef SEGATEXD_H
+#define SEGATEXD_H
 
-struct segatex_ng_config
-{
-    /* the number of threads to start */
-    int sgx_threads;
-};
+static const char *fname = "/etc/segatexd.conf";
 
-/* this is a pointer to the global configuration, it should be available
-   once cfg_init() was called */
-extern struct segatex_ng_config *segatexd_cfg;
-
-/* Initialize the configuration in segatexd_cfg. This method
-   will read the default configuration file and call exit()
-   if an error occurs. */
-/* This function could be called anywhere, so declared here. */
-void cfg_init(const char *fname);
-
-#endif /* CFG_H */
+#endif /* SEGATEXD_H */

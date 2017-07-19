@@ -1,8 +1,8 @@
 # Makefile.am - use automake to generate Makefile.in
 
-bin_PROGRAMS = segatex-ng
+bin_PROGRAMS = segatexd
 
 AM_CXFLAGS = $(INIT_CFLAGS)
 
-segatex_ng_SOURCES = main.c 
-segatex_ng_LDADD = $(INIT_LIBS) -lselinux
+segatexd_SOURCES = main.c 
+segatexd_LDADD = $(INIT_LIBS) -lselinux
