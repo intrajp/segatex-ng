@@ -28,7 +28,7 @@ version 2.1 of the License, or (at your option) any later version. See the
 configure.ac file for more details.])
 
 # initialize and set version and bugreport address
-AC_INIT([segatex-ng], [0.1.0], [shintaro.fujiwara@gmail.com])
+AC_INIT([segatexd], [0.1.1], [shintaro.fujiwara@gmail.com])
 RELEASE_MONTH="Jul 2017"
 AC_SUBST(RELEASE_MONTH)
 
@@ -107,13 +107,13 @@ AC_CHECK_FUNCS([setusershell getusershell endusershell getgrouplist])
 AC_CHECK_DECLS([setusershell, getusershell, endusershell])
 
 # check the name of the configuration file
-AC_ARG_WITH(segatex-ng-conf-file,
-            AS_HELP_STRING([--with-segatex-ng-conf-file=PATH],
-                           [path to segatexd configuration file @<:@/etc/segatex-ng.conf@:>@]),
-            [ SEGATEX_NG_CONF_PATH="$with_segatex_ng_conf_file" ],
-            [ SEGATEX_NG_CONF_PATH="/etc/segatex-ng.conf" ])
-AC_DEFINE_UNQUOTED(SEGATEX_NG_CONF_PATH, "$SEGATEX_NG_CONF_PATH", [Path to segatexd configuration file.])
-AC_SUBST(SEGATEX_NG_CONF_PATH)
+AC_ARG_WITH(segatexd-conf-file,
+            AS_HELP_STRING([--with-segatexd-conf-file=PATH],
+                           [path to segatexd configuration file @<:@/etc/segatexd.conf@:>@]),
+            [ SEGATEXD_CONF_PATH="$with_segatexd_conf_file" ],
+            [ SEGATEXD_CONF_PATH="/etc/segatexd.conf" ])
+AC_DEFINE_UNQUOTED(SEGATEXD_CONF_PATH, "$SEGATEXD_CONF_PATH", [Path to segatexd configuration file.])
+AC_SUBST(SEGATEXD_CONF_PATH)
 
 AC_PROG_CC
 AC_OUTPUT(Makefile src/Makefile)

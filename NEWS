@@ -1,1 +1,6 @@
+changes from 0.1.0 to 0.1.1
 ---------------------------
+
+* Now segatexd is daemonized 
+* configuration file name was changed to segatexd.conf from segatex-ng.conf 
+
