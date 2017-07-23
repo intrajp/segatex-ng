@@ -20,6 +20,6 @@ install-segatexd_conf:
 uninstall-segatexd_conf:
 	-rm -f $(DESTDIR)$(SEGATEXD_CONF_PATH)
 
-# create a symbolic link for the pynslcd daemon and fix permissions
+# create directory for pidfile 
 install-data-hook:
 	$(MKDIR_P) $(DESTDIR)/var/run/segatexd
