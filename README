@@ -55,7 +55,7 @@ UINSTALLATION
 HOW TO USE 
 ==================
 
-  # segatexd
+  # segatexd -d
 
   Only root can use this program.
 

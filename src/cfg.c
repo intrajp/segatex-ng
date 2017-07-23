@@ -2,6 +2,7 @@
    cfg.c - functions for configuration information
    This file contains the contents of segatex-ng.
 
+   Copyright (C) 2014 Arthur de Jong
    Copyright (C) 2017 Shintaro Fujiwara
 
    This library is free software; you can redistribute it and/or
@@ -37,20 +38,19 @@ struct segatex_ng_config *segatexd_cfg=NULL;
 #define TOKEN_DELIM " \t\n\r"
 
 /* set the configuration information to the defaults */
-/* This function is only called from this file, so set static.*/
 
-static void cfg_defaults(struct segatex_ng_config *cfg)
+void cfg_defaults(struct segatex_ng_config *cfg)
 {
     //for debug
-    //printf("cfg_defaults was called !\n");
+    printf("cfg_defaults was called !\n");
 
     memset(cfg,0,sizeof(struct segatex_ng_config));
-    cfg->sgx_threads=5;
+    cfg->threads=5;
 }
-
 
 /* check that the condition is true and otherwise log an error
    and bail out */
+/* This function is only called from this file, so set static.*/
 
 static inline void check_argumentcount(const char *filename, int lnr,
                                        const char *keyword, int condition)
@@ -141,12 +141,13 @@ static void get_eol(const char *filename,int lnr,
     }
 }
 
-/* This function is only called from this file, so set static.*/
+/* read configuration file of segatexd */
 
-static void cfg_read(const char *filename,struct segatex_ng_config *cfg)
+void cfg_read(const char *filename,struct segatex_ng_config *cfg)
 {
     //for debug
-    //printf("cfg_read was called !\n");
+    printf("cfg_read was called !\n");
+    printf("filename is %s\n",filename);
 
     FILE *fp;
     int lnr=0;
@@ -189,9 +190,9 @@ static void cfg_read(const char *filename,struct segatex_ng_config *cfg)
         //for debug
         //printf("keyword is %s\n",keyword);
         /* runtime options */
-        if (strcasecmp(keyword,"sgx_threads")==0)
+        if (strcasecmp(keyword,"threads")==0)
         {
-            cfg->sgx_threads = get_int(filename, lnr, keyword, &line);
+            cfg->threads = get_int(filename, lnr, keyword, &line);
             get_eol(filename, lnr, keyword, &line);
         }
         /* fallthrough */
@@ -203,7 +204,7 @@ static void cfg_read(const char *filename,struct segatex_ng_config *cfg)
         }
     }
     //for debug
-    printf("cfg->sgx_threads is %d\n",cfg->sgx_threads);
+    printf("cfg->threads is %d\n",cfg->threads);
     /* we're done reading file, close */
     fclose(fp);
 }
@@ -233,4 +234,5 @@ void cfg_init(const char *fname)
     cfg_defaults(segatexd_cfg);
     /* read configfile */
     cfg_read(fname,segatexd_cfg);
+    printf("segatexd_cfg:%p\n",segatexd_cfg);
 }

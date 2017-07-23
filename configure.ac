@@ -31,6 +31,7 @@ configure.ac file for more details.])
 AC_INIT([segatexd], [0.1.1], [shintaro.fujiwara@gmail.com])
 RELEASE_MONTH="Jul 2017"
 AC_SUBST(RELEASE_MONTH)
+AC_CONFIG_MACRO_DIR([m4])
 
 # display notice and initialize automake
 AC_MSG_NOTICE([configuring AC_PACKAGE_TARNAME AC_PACKAGE_VERSION])
@@ -114,6 +115,34 @@ AC_ARG_WITH(segatexd-conf-file,
             [ SEGATEXD_CONF_PATH="/etc/segatexd.conf" ])
 AC_DEFINE_UNQUOTED(SEGATEXD_CONF_PATH, "$SEGATEXD_CONF_PATH", [Path to segatexd configuration file.])
 AC_SUBST(SEGATEXD_CONF_PATH)
+
+# where should the pidfile be written
+AC_ARG_WITH(segatexd-pidfile,
+            AS_HELP_STRING([--with-segatexd-pidfile=PATH],
+                           [path to pidfile @<:@/var/run/segatexd/segatexd.pid@:>@]),
+            [ SEGATEXD_PIDFILE="$with_segatexd_pidfile" ],
+            [ SEGATEXD_PIDFILE="/var/run/segatexd/segatexd.pid" ])
+AC_DEFINE_UNQUOTED(SEGATEXD_PIDFILE, "$SEGATEXD_PIDFILE", [The location of the pidfile used for checking availability of the segatexd.])
+AC_SUBST(SEGATEXD_PIDFILE)
+
+# where is the socket used for communication
+AC_ARG_WITH(segatexd-socket,
+            AS_HELP_STRING([--with-segatexd-socket=PATH],
+                           [path to socket @<:@/var/run/segatexd/socket@:>@]),
+            [ SEGATEXD_SOCKET="$with_segatexd_socket" ],
+            [ SEGATEXD_SOCKET="/var/run/segatexd/socket" ])
+AC_DEFINE_UNQUOTED(SEGATEXD_SOCKET, "$SEGATEXD_SOCKET", [The location of the socket used for communicating.])
+AC_SUBST(SEGATEXD_SOCKET)
+
+## check threading stuff
+#AX_PTHREAD(, AC_MSG_ERROR([no support for pthreads]))
+#pthread_save_CFLAGS="$CFLAGS"
+#pthread_save_LIBS="$LIBS"
+#CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+#LIBS="$LIBS $PTHREAD_LIBS"
+#AC_CHECK_FUNCS([pthread_mutex_lock pthread_join pthread_timedjoin_np pthread_atfork])
+#CFLAGS="$pthread_save_CFLAGS"
+#LIBS="$pthread_save_LIBS"
 
 AC_PROG_CC
 AC_OUTPUT(Makefile src/Makefile)

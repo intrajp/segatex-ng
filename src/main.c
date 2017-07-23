@@ -22,27 +22,21 @@
 
 #include <stdio.h>
 #include <errno.h>
-/*
+#include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <syslog.h>
-#include <signal.h>
 #include <getopt.h>
 #include <string.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-*/
-
-#include "../segatexd.h"
 #include "main.h"
-#include "cfg.c"
 #include "daemonize.c"
 
 /* Main function */
 int main(int argc, char *argv[])
 {
-
     int i;
 
     i = is_selinux_enabled();
@@ -52,7 +46,6 @@ int main(int argc, char *argv[])
     else
         printf("SELinux is not enabled.\n");
 
-
     static struct option long_options[] = {
         {"test_conf", required_argument, 0, 't'},
         {"help", no_argument, 0, 'h'},
@@ -60,12 +53,15 @@ int main(int argc, char *argv[])
         {"pid_file", required_argument, 0, 'p'},
         {NULL, 0, 0, 0}
     };
+
     int value, option_index = 0, ret;
     char *log_file_name = NULL;
     int start_daemonized = 0;
 
     //app_name = argv[0];
     app_name = "segatexd";
+    /* Initialize the conf file reading procedure. */
+    cfg_init(fname);
 
     /* Try to process all command line arguments */
     while ((value = getopt_long(argc, argv, "c:l:t:p:dh", long_options, &option_index)) != -1) {
@@ -118,7 +114,7 @@ int main(int argc, char *argv[])
     }
 
     /* Initialize the conf file reading procedure. */
-    cfg_init(fname);
+    //cfg_init(fname);
 
     /* This global variable can be changed in function handling signal */
     running = 1;

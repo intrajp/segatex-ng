@@ -23,6 +23,7 @@
 #ifndef SEGATEXD_H
 #define SEGATEXD_H
 
+/* configuration file of this library */
 static const char *fname = "/etc/segatexd.conf";
 
 #endif /* SEGATEXD_H */
