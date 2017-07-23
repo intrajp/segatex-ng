@@ -5,4 +5,4 @@ bin_PROGRAMS = segatexd
 AM_CXFLAGS = $(INIT_CFLAGS)
 
 segatexd_SOURCES = main.c 
-segatexd_LDADD = $(INIT_LIBS) -lselinux
+segatexd_LDADD = $(INIT_LIBS) -lselinux -lpthread

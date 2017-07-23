@@ -3,6 +3,7 @@
 SUBDIRS = src
 
 SEGATEXD_CONF_PATH = @SEGATEXD_CONF_PATH@
+SEGATEXD_PIDFILE = @SEGATEXD_PIDFILE@
 
 install-data-local: install-segatexd_conf
 uninstall-local: uninstall-segatexd_conf
@@ -15,7 +16,10 @@ install-segatexd_conf:
             $(mkinstalldirs) `dirname $(DESTDIR)$(SEGATEXD_CONF_PATH)`; \
             $(INSTALL) -m 600 $(srcdir)/segatexd.conf $(DESTDIR)$(SEGATEXD_CONF_PATH); \
 	fi
+
 uninstall-segatexd_conf:
 	-rm -f $(DESTDIR)$(SEGATEXD_CONF_PATH)
 
-
+# create directory for pidfile 
+install-data-hook:
+	$(MKDIR_P) $(DESTDIR)/var/run/segatexd

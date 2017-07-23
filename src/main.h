@@ -20,8 +20,12 @@
    02110-1301 USA
 */
 
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef SEGATEXD_MAIN_H
+#define SEGATEXD_MAIN_H
+
+/* this is used to add extra format checking to the function calls as if this
+   was a printf()-like function */
+#define LIKE_PRINTF(format_idx, arg_idx) /* no attribute */
 
 /* this is a function of libselinux */
 int is_selinux_enabled();
