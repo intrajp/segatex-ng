@@ -40,6 +40,7 @@ extern struct segatex_ng_config *segatexd_cfg;
 /* This function could be called anywhere, so declared here. */
 void cfg_init(const char *fname);
 /* This function could be called anywhere, so declared here. */
-void cfg_read(const char *filename,struct segatex_ng_config *cfg);
+//void cfg_read(const char *filename,struct segatex_ng_config *cfg);
+void cfg_read(const char *fname,struct segatex_ng_config *cfg);
 
 #endif /* CFG_H */

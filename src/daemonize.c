@@ -40,6 +40,8 @@
      daemonize_ready() for that)
 */
 
+#define GLOBAL_VALUE_DEFINE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -59,45 +61,12 @@ static int delay = 1;
 static int counter = 0;
 static char *pid_file_name = "/var/run/segatexd/segatexd.pid";
 static int pid_fd = -1;
-static char *app_name = NULL;
+static char *app_name = "segatexd";
 static FILE *log_stream;
-
-
-/**
- * \brief Callback function for handling signals.
- * \param	sig	identifier of signal
- */
-void handle_signal(int sig)
-{
-    printf("handle_signal was called !\n");
-
-    if (sig == SIGINT) {
-        fprintf(log_stream, "Debug: stopping daemon ...\n");
-        printf("Debug: stopping daemon ...\n");
-        /* Unlock and close lockfile */
-        if (pid_fd != -1) {
-            lockf(pid_fd, F_ULOCK, 0);
-            close(pid_fd);
-        }
-        /* Try to delete lockfile */
-        if (pid_file_name != NULL) {
-            unlink(pid_file_name);
-        }
-        running = 0;
-        /* Reset signal handling to default behavior */
-        signal(SIGINT, SIG_DFL);
-    } else if (sig == SIGHUP) {
-        fprintf(log_stream, "Debug: reloading daemon config file ...\n");
-        printf("Debug: reloading daemon config file ...\n");
-        /* clear configuration */
-        //cfg_init(fname);
-        /* read configfile */
-        cfg_read(fname,segatexd_cfg);
-    } else if (sig == SIGCHLD) {
-        fprintf(log_stream, "Debug: received SIGCHLD signal\n");
-        printf("Debug: received SIGCHLD signal\n");
-    }
-}
+const char msg_sigint[] ="sigint caught!\n";
+const char msg_sighup[] ="sighup caught!\n";
+const char msg_sigchld[] ="sigchld caught!\n";
+int SIG_VALUE;
 
 /**
  * \brief This function will daemonize this app
@@ -115,19 +84,19 @@ static void daemonize()
 
     /* An error occurred */
     if (pid < 0) {
-        printf("daemonize process fork failed !\n");
+        //printf("daemonize process fork failed !\n");
         exit(EXIT_FAILURE);
     }
 
     /* Success: Let the parent terminate */
     if (pid > 0) {
-        printf("daemonize process fork succeeded !\n");
+        //printf("daemonize process fork succeeded !\n");
         exit(EXIT_SUCCESS);
     }
 
     /* On success: The child process becomes session leader */
     if (setsid() < 0) {
-        printf("daemonize process setsid failed !\n");
+        //printf("daemonize process setsid failed !\n");
         exit(EXIT_FAILURE);
     }
 
@@ -139,24 +108,24 @@ static void daemonize()
 
     /* An error occurred */
     if (pid2 < 0) {
-        printf("daemonize process second fork failed !\n");
+        //printf("daemonize process second fork failed !\n");
         exit(EXIT_FAILURE);
     }
 
     /* Success: Let the parent terminate */
     if (pid2 > 0) {
-        printf("daemonize process second fork succeeded !\n");
+        //printf("daemonize process second fork succeeded !\n");
         exit(EXIT_SUCCESS);
     }
 
     /* Set new file permissions */
     umask(0);
-    printf("daemonize process set new file permissions !\n");
+    //printf("daemonize process set new file permissions !\n");
 
     /* Change the working directory to the root directory */
     /* or another appropriated directory */
     chdir("/");
-    printf("daemonize process chdir to / !\n");
+    //printf("daemonize process chdir to / !\n");
 
     /* Close all open file descriptors */
     //for (fd = sysconf(_SC_OPEN_MAX); fd > 0; fd--) {
@@ -187,9 +156,47 @@ static void daemonize()
         sprintf(str, "%d\n", getpid());
         /* Write PID to lockfile */
         write(pid_fd, str, strlen(str));
-        printf("daemonize process write lockfile succeeded !\n");
+        //printf("daemonize process write lockfile succeeded !\n");
     }
     printf("daemonize process succeeded !\n");
+}
+
+/**
+ * \brief Callback function for handling signals.
+ * \param	sig	identifier of signal
+ */
+void handle_signal(int sig)
+{
+    if (sig == SIGINT) {
+        write(STDOUT_FILENO, msg_sigint, sizeof(msg_sighup)-1);
+        /* Unlock and close lockfile */
+        if (pid_fd != -1) {
+            lockf(pid_fd, F_ULOCK, 0);
+            close(pid_fd);
+        }
+        /* Try to delete lockfile */
+        if (pid_file_name != NULL) {
+            unlink(pid_file_name);
+        }
+        running = 0;
+        /* Reset signal handling to default behavior */
+        signal(SIGINT, SIG_DFL);
+    } else if (sig == SIGHUP) {
+        /*set global int value to 2*/
+        SIG_VALUE = 2;
+        /*showing this is SIGHUP process*/
+        //write(STDOUT_FILENO, msg_sighup, sizeof(msg_sighup)-1);
+        /* clear configuration */
+        cfg_defaults(segatexd_cfg);
+        /* read configfile */
+        cfg_read(fname,segatexd_cfg);
+        /*re-daemonize*/
+        daemonize();
+        /* Reset signal handling to default behavior */
+        signal(SIGINT, SIG_DFL);
+    } else if (sig == SIGCHLD) {
+        write(STDOUT_FILENO, msg_sigchld, sizeof(msg_sigchld)-1);
+    }
 }
 
 /**

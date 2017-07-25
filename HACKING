@@ -20,6 +20,7 @@ For building Git snapshots the following tools are needed:
 * autoconf
 * automake
 * libselinux
+* libpthread
 
 The segatexd uses autoconf and automake for building.
 This is how I do the building right now.
