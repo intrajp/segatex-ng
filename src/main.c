@@ -32,11 +32,15 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include "main.h"
+#include "../segatexd.h"
 #include "daemonize.c"
 
 /* Main function */
 int main(int argc, char *argv[])
 {
+    int SIG_VALUE;
+
+    printf("SIG_VALUE is %d\n",SIG_VALUE);
     int i;
 
     i = is_selinux_enabled();

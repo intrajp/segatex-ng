@@ -26,13 +26,16 @@
 #include <strings.h>
 #include <ctype.h>
 #include <syslog.h>
-
+#include <math.h>
+#include "../segatexd.h"
 #include "cfg.h"
 
 struct segatex_ng_config *segatexd_cfg=NULL;
+const char msg_cfg_read[] ="cfg_read was called by SIG_VALUE !\n";
+const char msg_cfg_read_ok[] ="file value was reloaded by SIG_VALUE !\n";
 
 /* the maximum line length in the configuration file */
-#define MAX_LINE_LENGTH          4096
+#define MAX_LINE_LENGTH    4096
 
 /* the delimiters of tokens */
 #define TOKEN_DELIM " \t\n\r"
@@ -45,6 +48,11 @@ void cfg_defaults(struct segatex_ng_config *cfg)
     printf("cfg_defaults was called !\n");
 
     memset(cfg,0,sizeof(struct segatex_ng_config));
+    if ( cfg == NULL )
+    {
+        printf("cfg.c: cfg_defaults() failed to memset");
+        exit(EXIT_FAILURE);
+    }
     cfg->threads=5;
 }
 
@@ -145,9 +153,27 @@ static void get_eol(const char *filename,int lnr,
 
 void cfg_read(const char *filename,struct segatex_ng_config *cfg)
 {
-    //for debug
-    printf("cfg_read was called !\n");
-    printf("filename is %s\n",filename);
+    char line_break[]="\n";
+    char struct_str[4096]="";
+    char struct_pre[]="cfg->threads is ";
+    char threads_str[24];
+    char filename_str[4096];
+    char filename_pre[]="file name is ";
+
+    strcpy(filename_str, filename_pre);
+    strcat(filename_str, filename);
+    strcat(filename_str, line_break);
+
+    /*if signal was caught, printf is unsafe, so change it to write*/
+    if (SIG_VALUE == 2)
+    {
+        write(STDOUT_FILENO, msg_cfg_read, sizeof(msg_cfg_read)-1);
+        //write(STDOUT_FILENO, filename_str, sizeof(filename_str)-1);
+    }
+    else
+    {
+        printf("cfg_read was called !\n");
+    }
 
     FILE *fp;
     int lnr=0;
@@ -204,7 +230,23 @@ void cfg_read(const char *filename,struct segatex_ng_config *cfg)
         }
     }
     //for debug
-    printf("cfg->threads is %d\n",cfg->threads);
+    /*setting int to char string*/
+    sprintf(threads_str, "%d", cfg->threads);
+    strcpy(struct_str, struct_pre);
+    strcat(struct_str, threads_str);
+    strcat(struct_str, line_break);
+
+    /*if signal was caught, printf is unsafe, so change it to write*/
+    //show file contents
+    if (SIG_VALUE == 2)
+    {
+        write(STDOUT_FILENO, msg_cfg_read_ok, sizeof(msg_cfg_read_ok));
+        write(STDOUT_FILENO, struct_str, sizeof(struct_str)-1);
+    }
+    else
+    {
+        printf("cfg->threads is %d\n",cfg->threads);
+    }
     /* we're done reading file, close */
     fclose(fp);
 }
@@ -230,9 +272,10 @@ void cfg_init(const char *fname)
         printf("malloc() failed to allocate memory\n");
         exit(EXIT_FAILURE);
     }
+
     /* clear configuration */
     cfg_defaults(segatexd_cfg);
     /* read configfile */
     cfg_read(fname,segatexd_cfg);
-    printf("segatexd_cfg:%p\n",segatexd_cfg);
+    //printf("segatexd_cfg:%p\n",segatexd_cfg);
 }

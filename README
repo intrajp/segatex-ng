@@ -66,6 +66,12 @@ CONFIGURATION
 
   File permission is set 600.
 
+SENDING SIGNALS 
+==================
+Execute the next command, it will reload the configuration file.
+
+# kill -s HUP `pidof segatexd`
+
 REPORTING BUGS
 ==============
 

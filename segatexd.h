@@ -23,7 +23,18 @@
 #ifndef SEGATEXD_H
 #define SEGATEXD_H
 
+#ifdef GLOBAL_VALUE_DEFINE
+    #define GLOBAL
+    #define GLOBAL_VAL(v) = (v)
+#else
+    #define GLOBAL extern
+    #define GLOBAL_VAL(v)
+#endif
+
+/*this difinition should be 0*/
+GLOBAL int SIG_VALUE; 
+
 /* configuration file of this library */
-static const char *fname = "/etc/segatexd.conf";
+static const char const *fname = "/etc/segatexd.conf";
 
 #endif /* SEGATEXD_H */
