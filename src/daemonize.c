@@ -50,9 +50,9 @@
 #include <getopt.h>
 #include <string.h>
 #include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "../segatexd.h"
 #include "cfg.c"
 
@@ -63,14 +63,13 @@ static char *pid_file_name = "/var/run/segatexd/segatexd.pid";
 static int pid_fd = -1;
 static char *app_name = "segatexd";
 static FILE *log_stream;
-const char msg_sigint[] ="sigint caught!\n";
-const char msg_sighup[] ="sighup caught!\n";
-const char msg_sigchld[] ="sigchld caught!\n";
+const char msg_sigint[] ="segatexd caught SIGINT !\n";
+const char msg_sighup[] ="segatexd caught SIGHUP !\n";
+const char msg_sigchld[] ="segatexd caught SIGCHLD !\n";
 int SIG_VALUE;
 
-/**
- * \brief This function will daemonize this app
- */
+/* brief This function will daemonize this app */
+
 static void daemonize()
 {
     printf("daemonize process started !\n");
@@ -81,6 +80,7 @@ static void daemonize()
 
     /* Fork off the parent process */
     pid = fork();
+    printf("pid is %d\n",pid);
 
     /* An error occurred */
     if (pid < 0) {
@@ -105,6 +105,7 @@ static void daemonize()
 
     /* Fork off for the second time*/
     pid2 = fork();
+    printf("pid2 is %d\n",pid2);
 
     /* An error occurred */
     if (pid2 < 0) {
@@ -119,13 +120,31 @@ static void daemonize()
     }
 
     /* Set new file permissions */
-    umask(0);
+    //umask(S_IWGRP | S_IWOTH);
+    if (!umask(S_IWGRP | S_IWOTH)){
+        //printf("umask(0) errored.\n");
+        exit(EXIT_FAILURE);
+    };
     //printf("daemonize process set new file permissions !\n");
 
     /* Change the working directory to the root directory */
     /* or another appropriated directory */
+    char buf_cwd[4096];
+    char buf_cwd2[4096];
+    char buf_cwd3[4096];
+    getcwd(buf_cwd,sizeof(buf_cwd));
+    printf("Current directory is %s\n",buf_cwd);
     chdir("/");
-    //printf("daemonize process chdir to / !\n");
+    //printf("Current directory is %d\n",getcwd());
+    if (chdir("/") == -1){
+        printf("chdir(/) errored.\n");
+        getcwd(buf_cwd2,sizeof(buf_cwd2));
+        printf("Current directory is %s\n",buf_cwd2);
+        exit(EXIT_FAILURE);
+    };
+    getcwd(buf_cwd3,sizeof(buf_cwd3));
+    printf("Now the Current directory is %s\n",buf_cwd3);
+    printf("daemonize process chdir to / !\n");
 
     /* Close all open file descriptors */
     //for (fd = sysconf(_SC_OPEN_MAX); fd > 0; fd--) {
@@ -153,22 +172,23 @@ static void daemonize()
             exit(EXIT_FAILURE);
         }
         /* Get current PID */
+        printf("Current PID is %d\n",getpid());
         sprintf(str, "%d\n", getpid());
         /* Write PID to lockfile */
         write(pid_fd, str, strlen(str));
-        //printf("daemonize process write lockfile succeeded !\n");
+        printf("daemonize process write lockfile succeeded !\n");
     }
     printf("daemonize process succeeded !\n");
 }
 
-/**
- * \brief Callback function for handling signals.
- * \param	sig	identifier of signal
+/* brief Callback function for handling signals.
+ * param	sig	identifier of signal
  */
 void handle_signal(int sig)
 {
     if (sig == SIGINT) {
-        write(STDOUT_FILENO, msg_sigint, sizeof(msg_sighup)-1);
+        /*showing this is SIGINT process*/
+        write(STDOUT_FILENO, msg_sigint, sizeof(msg_sigint)-1);
         /* Unlock and close lockfile */
         if (pid_fd != -1) {
             lockf(pid_fd, F_ULOCK, 0);
@@ -194,23 +214,9 @@ void handle_signal(int sig)
         daemonize();
         /* Reset signal handling to default behavior */
         signal(SIGINT, SIG_DFL);
-    } else if (sig == SIGCHLD) {
-        write(STDOUT_FILENO, msg_sigchld, sizeof(msg_sigchld)-1);
+    //} else if (sig == SIGCHLD) {
+    //    /*showing this is SIGCHLD process*/
+    //    write(STDOUT_FILENO, msg_sigchld, sizeof(msg_sigchld)-1);
     }
 }
 
-/**
- * \brief Print help for this application
- */
-void print_help(void)
-{
-    printf("\n Usage: %s [OPTIONS]\n\n", app_name);
-    printf("  Options:\n");
-    printf("   -h --help                 Print this help\n");
-    printf("   -c --conf_file filename   Read configuration from the file\n");
-    printf("   -t --test_conf filename   Test configuration file\n");
-    printf("   -l --log_file  filename   Write logs to the file\n");
-    printf("   -d --daemon               Daemonize this application\n");
-    printf("   -p --pid_file  filename   PID file used by daemonized app\n");
-    printf("\n");
-}

@@ -68,9 +68,13 @@ CONFIGURATION
 
 SENDING SIGNALS 
 ==================
-Execute the next command, it will reload the configuration file.
+Executing the next command will reload the configuration file.
 
 # kill -s HUP `pidof segatexd`
+
+Executing the next command will stop the program.
+
+# kill -s INT `pidof segatexd`
 
 REPORTING BUGS
 ==============
