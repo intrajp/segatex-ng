@@ -35,25 +35,32 @@
 #include "../segatexd.h"
 #include "daemonize.c"
 
+/* brief Print help for this application */
+void print_help(void)
+{
+    printf("\n Usage: %s [OPTIONS]\n\n", app_name);
+    printf("  Options:\n");
+    printf("   -r --reload               Reload the configuration file\n");
+    printf("   -d --daemon               Daemonize this application\n");
+    printf("   -h --help                 Print this help\n");
+    //printf("   -c --conf_file filename   Read configuration from the file\n");
+    printf("   -t --test_conf filename   Test configuration file\n");
+    //printf("   -l --log_file  filename   Write logs to the file\n");
+    printf("   -p --pid_file  filename   PID file used by daemonized app\n");
+    printf("\n");
+}
+
 /* Main function */
 int main(int argc, char *argv[])
 {
-    int SIG_VALUE;
-
-    printf("SIG_VALUE is %d\n",SIG_VALUE);
-    int i;
-
-    i = is_selinux_enabled();
-
-    if (i = 1)
-        printf("SELinux is enabled.\n");
-    else
-        printf("SELinux is not enabled.\n");
+    //app_name = argv[0];
+    app_name = "segatexd";
 
     static struct option long_options[] = {
         {"test_conf", required_argument, 0, 't'},
-        {"help", no_argument, 0, 'h'},
+        {"reload", no_argument, 0, 'r'},
         {"daemon", no_argument, 0, 'd'},
+        {"help", no_argument, 0, 'h'},
         {"pid_file", required_argument, 0, 'p'},
         {NULL, 0, 0, 0}
     };
@@ -61,14 +68,10 @@ int main(int argc, char *argv[])
     int value, option_index = 0, ret;
     char *log_file_name = NULL;
     int start_daemonized = 0;
-
-    //app_name = argv[0];
-    app_name = "segatexd";
-    /* Initialize the conf file reading procedure. */
-    cfg_init(fname);
+    int duplicate_value = 0;
 
     /* Try to process all command line arguments */
-    while ((value = getopt_long(argc, argv, "c:l:t:p:dh", long_options, &option_index)) != -1) {
+    while ((value = getopt_long(argc, argv, "ptdrh::", long_options, &option_index)) != -1) {
         switch (value) {
             case 'p':
                 pid_file_name = strdup(optarg);
@@ -77,7 +80,23 @@ int main(int argc, char *argv[])
                 cfg_init(fname);
                 break;
             case 'd':
+                //printf("duplicate_value:%d\n",duplicate_value);
+                if ( duplicate_value == 1 ){
+                    printf("-r and -d could not be selected at the same time\n");
+                    return EXIT_FAILURE; 
+                }
+                duplicate_value = 1;
                 start_daemonized = 1;
+                break;
+            case 'r':
+                //printf("duplicate_value:%d\n",duplicate_value);
+                if ( duplicate_value == 1 ){
+                    printf("-r and -d could not be selected at the same time\n");
+                    return EXIT_FAILURE; 
+                }
+                duplicate_value = 1;
+                cfg_init(fname);
+                handle_signal(SIGHUP);
                 break;
             case 'h':
                 print_help();
@@ -89,6 +108,18 @@ int main(int argc, char *argv[])
                 break;
         }
     }
+
+    int SIG_VALUE;
+    printf("SIG_VALUE is %d\n",SIG_VALUE);
+    int i;
+    i = is_selinux_enabled();
+    if (i = 1)
+        printf("SELinux is enabled.\n");
+    else
+        printf("SELinux is not enabled.\n");
+
+    /* Initialize the conf file reading procedure. */
+    cfg_init(fname);
 
     /* When daemonizing is requested at command line. */
     if (start_daemonized == 1) {
@@ -117,13 +148,11 @@ int main(int argc, char *argv[])
         log_stream = stdout;
     }
 
-    /* Initialize the conf file reading procedure. */
-    //cfg_init(fname);
-
     /* This global variable can be changed in function handling signal */
     running = 1;
 
     /* Never ending loop of server */
+
     while (running == 1) {
         /* Debug print */
         ret = fprintf(log_stream, "Debug: %d\n", counter++);
@@ -138,7 +167,6 @@ int main(int argc, char *argv[])
                 (log_stream == stdout) ? "stdout" : log_file_name, strerror(errno));
             break;
         }
-
         /* TODO: dome something useful here */
 
         /* Real server should use select() or poll() for waiting at
