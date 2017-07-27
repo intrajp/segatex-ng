@@ -57,7 +57,7 @@
 #include "cfg.c"
 
 static int running = 0;
-static int delay = 1;
+static int delay = 120;
 static int counter = 0;
 static char *pid_file_name = "/var/run/segatexd/segatexd.pid";
 static int pid_fd = -1;
@@ -72,86 +72,61 @@ int SIG_VALUE;
 
 static void daemonize()
 {
-    printf("daemonize process started !\n");
-
     pid_t pid = 0;
     pid_t pid2 = 0;
     int fd;
 
     /* Fork off the parent process */
     pid = fork();
-    printf("pid is %d\n",pid);
-
     /* An error occurred */
     if (pid < 0) {
-        //printf("daemonize process fork failed !\n");
         exit(EXIT_FAILURE);
     }
-
     /* Success: Let the parent terminate */
     if (pid > 0) {
-        //printf("daemonize process fork succeeded !\n");
         exit(EXIT_SUCCESS);
     }
-
     /* On success: The child process becomes session leader */
     if (setsid() < 0) {
-        //printf("daemonize process setsid failed !\n");
         exit(EXIT_FAILURE);
     }
-
     /* Ignore signal sent from child to parent process */
     signal(SIGCHLD, SIG_IGN);
-
     /* Fork off for the second time*/
     pid2 = fork();
-    printf("pid2 is %d\n",pid2);
-
     /* An error occurred */
     if (pid2 < 0) {
-        //printf("daemonize process second fork failed !\n");
         exit(EXIT_FAILURE);
     }
-
     /* Success: Let the parent terminate */
     if (pid2 > 0) {
-        //printf("daemonize process second fork succeeded !\n");
         exit(EXIT_SUCCESS);
     }
-
     /* Set new file permissions */
-    //umask(S_IWGRP | S_IWOTH);
     if (!umask(S_IWGRP | S_IWOTH)){
-        //printf("umask(0) errored.\n");
         exit(EXIT_FAILURE);
     };
-    //printf("daemonize process set new file permissions !\n");
-
     /* Change the working directory to the root directory */
     /* or another appropriated directory */
     char buf_cwd[4096];
     char buf_cwd2[4096];
     char buf_cwd3[4096];
     getcwd(buf_cwd,sizeof(buf_cwd));
-    printf("Current directory is %s\n",buf_cwd);
+    //printf("Now the Current directory is %s\n",buf_cwd);
     chdir("/");
-    //printf("Current directory is %d\n",getcwd());
     if (chdir("/") == -1){
-        printf("chdir(/) errored.\n");
         getcwd(buf_cwd2,sizeof(buf_cwd2));
-        printf("Current directory is %s\n",buf_cwd2);
+        //printf("Now the Current directory is %s\n",buf_cwd2);
         exit(EXIT_FAILURE);
     };
     getcwd(buf_cwd3,sizeof(buf_cwd3));
-    printf("Now the Current directory is %s\n",buf_cwd3);
-    printf("daemonize process chdir to / !\n");
+    //printf("Now the Current directory is %s\n",buf_cwd3);
 
     /* Close all open file descriptors */
     //for (fd = sysconf(_SC_OPEN_MAX); fd > 0; fd--) {
     //    //printf("daemonize process close file descriptor:%d !\n",fd);
     //    close(fd);
     //}
-    //printf("daemonize process closed file descriptors !\n");
 
     /* Reopen stdin (fd = 0), stdout (fd = 1), stderr (fd = 2) */
     stdin = fopen("/dev/null", "r");
@@ -172,13 +147,13 @@ static void daemonize()
             exit(EXIT_FAILURE);
         }
         /* Get current PID */
-        printf("Current PID is %d\n",getpid());
+        //printf("Current PID is %d\n",getpid());
         sprintf(str, "%d\n", getpid());
         /* Write PID to lockfile */
         write(pid_fd, str, strlen(str));
-        printf("daemonize process write lockfile succeeded !\n");
     }
     printf("daemonize process succeeded !\n");
+    syslog(LOG_INFO, "segatexd daemonize process succeeded.");
 }
 
 /* brief Callback function for handling signals.
@@ -214,9 +189,9 @@ void handle_signal(int sig)
         daemonize();
         /* Reset signal handling to default behavior */
         signal(SIGINT, SIG_DFL);
-    //} else if (sig == SIGCHLD) {
-    //    /*showing this is SIGCHLD process*/
-    //    write(STDOUT_FILENO, msg_sigchld, sizeof(msg_sigchld)-1);
+    } else if (sig == SIGCHLD) {
+        /*showing this is SIGCHLD process*/
+        write(STDOUT_FILENO, msg_sigchld, sizeof(msg_sigchld)-1);
     }
 }
 
