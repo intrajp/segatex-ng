@@ -83,6 +83,7 @@ int main(int argc, char *argv[])
                 //printf("duplicate_value:%d\n",duplicate_value);
                 if ( duplicate_value == 1 ){
                     printf("-r and -d could not be selected at the same time\n");
+                    syslog(LOG_ERR, "-r and -d could not be selected at the same time");
                     return EXIT_FAILURE; 
                 }
                 duplicate_value = 1;
@@ -92,6 +93,7 @@ int main(int argc, char *argv[])
                 //printf("duplicate_value:%d\n",duplicate_value);
                 if ( duplicate_value == 1 ){
                     printf("-r and -d could not be selected at the same time\n");
+                    syslog(LOG_ERR, "-r and -d could not be selected at the same time");
                     return EXIT_FAILURE; 
                 }
                 duplicate_value = 1;
@@ -172,6 +174,7 @@ int main(int argc, char *argv[])
         /* Real server should use select() or poll() for waiting at
          * asynchronous event. Note: sleep() is interrupted, when
          * signal is received. */
+        syslog(LOG_INFO, "this is segatexd-server");
         sleep(delay);
     }
 

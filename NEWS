@@ -2,6 +2,7 @@ changes from 0.1.3 to 0.1.4
 ---------------------------
 * Fixed getopt functionality in main.c 
 * Changed src directory to server directory 
+* Added syslog messages 
 
 changes from 0.1.2 to 0.1.3
 ---------------------------
