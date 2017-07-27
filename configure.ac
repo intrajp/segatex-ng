@@ -36,7 +36,7 @@ AC_CONFIG_MACRO_DIR([m4])
 # display notice and initialize automake
 AC_MSG_NOTICE([configuring AC_PACKAGE_TARNAME AC_PACKAGE_VERSION])
 AM_INIT_AUTOMAKE([1.11.2 --warnings=all])
-AC_CONFIG_SRCDIR([src/main.c])
+AC_CONFIG_SRCDIR([server/main.c])
 
 # create a config.h file (Automake will add -DHAVE_CONFIG_H)
 #AC_CONFIG_HEADERS([config.h])
@@ -145,4 +145,4 @@ AC_SUBST(SEGATEXD_SOCKET)
 #LIBS="$pthread_save_LIBS"
 
 AC_PROG_CC
-AC_OUTPUT(Makefile src/Makefile)
+AC_OUTPUT(Makefile server/Makefile)
