@@ -1,6 +1,6 @@
 # Makefile.am - use automake to generate Makefile.in
 
-SUBDIRS = src
+SUBDIRS = server
 
 SEGATEXD_CONF_PATH = @SEGATEXD_CONF_PATH@
 SEGATEXD_PIDFILE = @SEGATEXD_PIDFILE@
