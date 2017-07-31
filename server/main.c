@@ -113,12 +113,23 @@ int main(int argc, char *argv[])
 
     int SIG_VALUE;
     printf("SIG_VALUE is %d\n",SIG_VALUE);
+
     int i;
+    int i2;
+    int fd2;
+
     i = is_selinux_enabled();
+    i2 = audit_is_enabled(1);
     if (i = 1)
         printf("SELinux is enabled.\n");
     else
         printf("SELinux is not enabled.\n");
+    if (i2 = 1)
+        printf("Audit is enabled.\n");
+    else if (i2 = 0)
+        printf("Audit is not enabled.\n");
+    else if (i2 = -1)
+        printf("Audit got error.\n");
 
     /* Initialize the conf file reading procedure. */
     cfg_init(fname);

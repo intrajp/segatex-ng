@@ -3,4 +3,10 @@ Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
 
 Contributors:
 Arthur de Jong <arthur@arthurdejong.org>
+
+* server/daemonize.c
 Jiri Hnidek <jiri.hnidek@tul.cz>
+
+* server/cfg.c
+Steve Grubb <sgrubb@redhat.com>
+Rickard E. (Rik) Faith <faith@redhat.com>
