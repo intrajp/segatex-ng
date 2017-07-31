@@ -19,6 +19,11 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
    02110-1301 USA
+
+   Has borrowed some from libaudit.c. These guys will be happy to be mentioned here.
+     Authors of libaudit.c 
+       Steve Grubb <sgrubb@redhat.com>
+       Rickard E. (Rik) Faith <faith@redhat.com>
 */
 
 #include <stdlib.h>
@@ -27,6 +32,9 @@
 #include <ctype.h>
 #include <syslog.h>
 #include <math.h>
+//newly added
+#include <sys/stat.h>
+//end newly added
 #include "../segatexd.h"
 #include "cfg.h"
 
@@ -176,18 +184,73 @@ void cfg_read(const char *filename,struct segatex_ng_config *cfg)
     }
 
     FILE *fp;
-    int lnr=0;
+    //int lnr=0;
+    int fd, rc, lnr = 0;
+    struct stat st;
     char linebuf[MAX_LINE_LENGTH];
     char *line;
     char keyword[32];
     char token[64];
     int i;
+
+    /* open the file */
+    rc = open(filename, O_NOFOLLOW|O_RDONLY);
+    if (rc < 0) {
+        if (errno != ENOENT) {
+            syslog(LOG_ERR, "Error opening %s (%s)",
+                filename, strerror(errno));
+            printf("Error opening %s (%s)\n",
+                filename, strerror(errno));
+            exit(EXIT_FAILURE);
+        }
+        syslog(LOG_WARNING,
+            "Config file %s doesn't exist", filename);
+        printf( 
+            "Config file %s doesn't exist\n", filename);
+        exit(EXIT_FAILURE);
+    }
+    fd = rc;
+
+    /* check the file's permissions: owned by root, not world writable,
+     * not symlink.
+     */
+    syslog(LOG_DEBUG, "Config file %s opened for parsing", filename);
+    printf("Config file %s opened for parsing\n", filename);
+
+    if (fstat(fd, &st) < 0) {
+        syslog(LOG_ERR, "Error fstat'ing %s (%s)",
+            filename, strerror(errno));
+        printf("Error fstat'ing %s (%s)\n",
+            filename, strerror(errno));
+        close(fd);
+        exit(EXIT_FAILURE);
+    }
+    if (st.st_uid != 0) {
+        syslog(LOG_ERR, "Error - %s isn't owned by root", filename);
+        printf("Error - %s isn't owned by root\n", filename);
+        close(fd);
+        exit(EXIT_FAILURE);
+    }
+    if ((st.st_mode & S_IWOTH) == S_IWOTH) {
+        syslog(LOG_ERR, "Error - %s is world writable", filename);
+        printf("Error - %s is world writable", filename);
+        close(fd);
+        exit(EXIT_FAILURE);
+    }
+    /* using macro to check file*/
+    if (!S_ISREG(st.st_mode)) {
+        syslog(LOG_ERR, "Error - %s is not a regular file", filename);
+        printf("Error - %s is not a regular file\n", filename);
+        close(fd);
+        exit(EXIT_FAILURE);
+    }
+
     /* open config file */
     if ((fp=fopen(filename,"r"))==NULL)
     {
         //log_log(LOG_ERR,"cannot open config file (%s): %s",filename,strerror(errno));
         printf("cannot open config file %s\n",filename);
-        syslog(LOG_INFO,"cannot open config file %s\n",filename);
+        syslog(LOG_INFO,"cannot open config file %s",filename);
         exit(EXIT_FAILURE);
     }
     /* read file and parse lines */

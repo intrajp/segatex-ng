@@ -30,4 +30,7 @@
 /* this is a function of libselinux */
 int is_selinux_enabled();
 
+/* this is a function of libaudit */
+int audit_is_enabled(int fd);
+
 #endif
