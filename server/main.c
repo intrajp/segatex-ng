@@ -33,6 +33,7 @@
 #include <sys/types.h>
 #include "main.h"
 #include "../segatexd.h"
+#include "message.c"
 #include "daemonize.c"
 
 /* brief Print help for this application */
@@ -55,6 +56,8 @@ int main(int argc, char *argv[])
 {
     //app_name = argv[0];
     app_name = "segatexd";
+    //setting message_mode
+    set_sgmessage_mode(MSG_SYSLOG, DBG_NO); 
 
     static struct option long_options[] = {
         {"test_conf", required_argument, 0, 't'},
@@ -83,7 +86,6 @@ int main(int argc, char *argv[])
                 //printf("duplicate_value:%d\n",duplicate_value);
                 if ( duplicate_value == 1 ){
                     printf("-r and -d could not be selected at the same time\n");
-                    syslog(LOG_ERR, "-r and -d could not be selected at the same time");
                     return EXIT_FAILURE; 
                 }
                 duplicate_value = 1;
@@ -93,7 +95,6 @@ int main(int argc, char *argv[])
                 //printf("duplicate_value:%d\n",duplicate_value);
                 if ( duplicate_value == 1 ){
                     printf("-r and -d could not be selected at the same time\n");
-                    syslog(LOG_ERR, "-r and -d could not be selected at the same time");
                     return EXIT_FAILURE; 
                 }
                 duplicate_value = 1;
@@ -143,7 +144,7 @@ int main(int argc, char *argv[])
 
     /* Open system log and write message to it */
     openlog(argv[0], LOG_PID|LOG_CONS, LOG_DAEMON);
-    syslog(LOG_INFO, "Started %s", app_name);
+    segatex_msg(LOG_INFO, "Started %s", app_name);
 
     /* Daemon will handle two signals */
     signal(SIGINT, handle_signal);
@@ -153,7 +154,7 @@ int main(int argc, char *argv[])
     if (log_file_name != NULL) {
         log_stream = fopen(log_file_name, "a+");
         if (log_stream == NULL) {
-            syslog(LOG_ERR, "Can not open log file: %s, error: %s",
+            segatex_msg(LOG_ERR, "Can not open log file: %s, error: %s",
                 log_file_name, strerror(errno));
             log_stream = stdout;
         }
@@ -170,13 +171,13 @@ int main(int argc, char *argv[])
         /* Debug print */
         ret = fprintf(log_stream, "Debug: %d\n", counter++);
         if (ret < 0) {
-            syslog(LOG_ERR, "Can not write to log stream: %s, error: %s",
+            segatex_msg(LOG_ERR, "Can not write to log stream: %s, error: %s",
                 (log_stream == stdout) ? "stdout" : log_file_name, strerror(errno));
             break;
         }
         ret = fflush(log_stream);
         if (ret != 0) {
-            syslog(LOG_ERR, "Can not fflush() log stream: %s, error: %s",
+            segatex_msg(LOG_ERR, "Can not fflush() log stream: %s, error: %s",
                 (log_stream == stdout) ? "stdout" : log_file_name, strerror(errno));
             break;
         }
@@ -185,7 +186,7 @@ int main(int argc, char *argv[])
         /* Real server should use select() or poll() for waiting at
          * asynchronous event. Note: sleep() is interrupted, when
          * signal is received. */
-        syslog(LOG_INFO, "this is segatexd-server");
+        segatex_msg(LOG_INFO, "this is segatexd-server");
         sleep(delay);
     }
 
@@ -195,7 +196,7 @@ int main(int argc, char *argv[])
     }
 
     /* Write system log and close it. */
-    syslog(LOG_INFO, "Stopped %s", app_name);
+    segatex_msg(LOG_INFO, "Stopped %s", app_name);
     closelog();
 
     /* Free allocated memory */

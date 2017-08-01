@@ -32,9 +32,7 @@
 #include <ctype.h>
 #include <syslog.h>
 #include <math.h>
-//newly added
 #include <sys/stat.h>
-//end newly added
 #include "../segatexd.h"
 #include "cfg.h"
 
@@ -73,10 +71,8 @@ static inline void check_argumentcount(const char *filename, int lnr,
 {
     if (!condition)
     {
-        printf("%s:%d: %s: wrong number of arguments",
+        segatex_msg(LOG_ERR, "%s:%d: %s: wrong number of arguments",
                 filename, lnr, keyword);
-        //log_log(LOG_ERR, "%s:%d: %s: wrong number of arguments",
-        //        filename, lnr, keyword);
         exit(EXIT_FAILURE);
     }
 }
@@ -151,8 +147,7 @@ static void get_eol(const char *filename,int lnr,
 
     if ((line!=NULL)&&(*line!=NULL)&&(**line!='\0'))
     {
-        //log_log(LOG_ERR,"%s:%d: %s: too may arguments",filename,lnr,keyword);
-        printf("%s:%d: %s: too many arguments\n",filename,lnr,keyword);
+        segatex_msg(LOG_ERR,"%s:%d: %s: too may arguments",filename,lnr,keyword);
         exit(EXIT_FAILURE);
     }
 }
@@ -176,7 +171,6 @@ void cfg_read(const char *filename,struct segatex_ng_config *cfg)
     if (SIG_VALUE == 2)
     {
         write(STDOUT_FILENO, msg_cfg_read, sizeof(msg_cfg_read)-1);
-        //write(STDOUT_FILENO, filename_str, sizeof(filename_str)-1);
     }
     else
     {
@@ -197,16 +191,12 @@ void cfg_read(const char *filename,struct segatex_ng_config *cfg)
     rc = open(filename, O_NOFOLLOW|O_RDONLY);
     if (rc < 0) {
         if (errno != ENOENT) {
-            syslog(LOG_ERR, "Error opening %s (%s)",
-                filename, strerror(errno));
-            printf("Error opening %s (%s)\n",
+            segatex_msg(LOG_ERR, "Error opening %s (%s)",
                 filename, strerror(errno));
             exit(EXIT_FAILURE);
         }
-        syslog(LOG_WARNING,
+        segatex_msg(LOG_WARNING,
             "Config file %s doesn't exist", filename);
-        printf( 
-            "Config file %s doesn't exist\n", filename);
         exit(EXIT_FAILURE);
     }
     fd = rc;
@@ -214,33 +204,27 @@ void cfg_read(const char *filename,struct segatex_ng_config *cfg)
     /* check the file's permissions: owned by root, not world writable,
      * not symlink.
      */
-    syslog(LOG_DEBUG, "Config file %s opened for parsing", filename);
-    printf("Config file %s opened for parsing\n", filename);
+    segatex_msg(LOG_DEBUG, "Config file %s opened for parsing", filename);
 
     if (fstat(fd, &st) < 0) {
-        syslog(LOG_ERR, "Error fstat'ing %s (%s)",
-            filename, strerror(errno));
-        printf("Error fstat'ing %s (%s)\n",
+        segatex_msg(LOG_ERR, "Error fstat'ing %s (%s)",
             filename, strerror(errno));
         close(fd);
         exit(EXIT_FAILURE);
     }
     if (st.st_uid != 0) {
-        syslog(LOG_ERR, "Error - %s isn't owned by root", filename);
-        printf("Error - %s isn't owned by root\n", filename);
+        segatex_msg(LOG_ERR, "Error - %s isn't owned by root", filename);
         close(fd);
         exit(EXIT_FAILURE);
     }
     if ((st.st_mode & S_IWOTH) == S_IWOTH) {
-        syslog(LOG_ERR, "Error - %s is world writable", filename);
-        printf("Error - %s is world writable", filename);
+        segatex_msg(LOG_ERR, "Error - %s is world writable", filename);
         close(fd);
         exit(EXIT_FAILURE);
     }
     /* using macro to check file*/
     if (!S_ISREG(st.st_mode)) {
-        syslog(LOG_ERR, "Error - %s is not a regular file", filename);
-        printf("Error - %s is not a regular file\n", filename);
+        segatex_msg(LOG_ERR, "Error - %s is not a regular file", filename);
         close(fd);
         exit(EXIT_FAILURE);
     }
@@ -248,9 +232,7 @@ void cfg_read(const char *filename,struct segatex_ng_config *cfg)
     /* open config file */
     if ((fp=fopen(filename,"r"))==NULL)
     {
-        //log_log(LOG_ERR,"cannot open config file (%s): %s",filename,strerror(errno));
-        printf("cannot open config file %s\n",filename);
-        syslog(LOG_INFO,"cannot open config file %s",filename);
+        segatex_msg(LOG_ERR,"cannot open config file (%s): %s",filename,strerror(errno));
         exit(EXIT_FAILURE);
     }
     /* read file and parse lines */
@@ -262,8 +244,7 @@ void cfg_read(const char *filename,struct segatex_ng_config *cfg)
         i=(int)strlen(line);
         if ((i<=0)||(line[i-1]!='\n'))
         {
-            //log_log(LOG_ERR,"%s:%d: line too long or last line missing newline",filename,lnr);
-            printf("%s:%d:  line too long or last line missing newline\n",filename,lnr);
+            segatex_msg(LOG_ERR,"%s:%d: line too long or last line missing newline",filename,lnr);
             exit(EXIT_FAILURE);
         }
         line[i-1]='\0';
@@ -287,8 +268,7 @@ void cfg_read(const char *filename,struct segatex_ng_config *cfg)
         /* fallthrough */
         else
         {
-            //log_log(LOG_ERR,"%s:%d: unknown keyword: '%s'",filename,lnr,keyword);
-            printf("%s:%d: unknown keyword: '%s'\n",filename,lnr,keyword);
+            segatex_msg(LOG_ERR,"%s:%d: unknown keyword: '%s'",filename,lnr,keyword);
             exit(EXIT_FAILURE);
         }
     }
@@ -323,16 +303,14 @@ void cfg_init(const char *fname)
     /* check if we were called before */
     if (segatexd_cfg!=NULL)
     {
-        //log_log(LOG_CRIT,"cfg_init() may only be called once");
-        printf("cfg_init() may only be called once\n");
+        segatex_msg(LOG_CRIT,"cfg_init() may only be called once");
         exit(EXIT_FAILURE);
     }
     /* allocate the memory (this memory is not freed anywhere) */
     segatexd_cfg=(struct segatex_ng_config *)malloc(sizeof(struct segatex_ng_config));
     if (segatexd_cfg==NULL)
     {
-        //log_log(LOG_CRIT,"malloc() failed to allocate memory");
-        printf("malloc() failed to allocate memory\n");
+        segatex_msg(LOG_CRIT,"malloc() failed to allocate memory");
         exit(EXIT_FAILURE);
     }
 
