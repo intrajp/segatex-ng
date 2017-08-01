@@ -152,8 +152,7 @@ static void daemonize()
         /* Write PID to lockfile */
         write(pid_fd, str, strlen(str));
     }
-    printf("daemonize process succeeded !\n");
-    syslog(LOG_INFO, "segatexd daemonize process succeeded.");
+    syslog(LOG_INFO, "segatexd daemonize process succeeded");
 }
 
 /* brief Callback function for handling signals.

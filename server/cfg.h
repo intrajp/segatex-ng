@@ -21,8 +21,8 @@
    02110-1301 USA
 */
 
-#ifndef CFG_H
-#define CFG_H
+#ifndef SEGATEXD__CFG_H
+#define SEGATEXD__CFG_H
 
 struct segatex_ng_config
 {
@@ -43,4 +43,4 @@ void cfg_init(const char *fname);
 //void cfg_read(const char *filename,struct segatex_ng_config *cfg);
 void cfg_read(const char *fname,struct segatex_ng_config *cfg);
 
-#endif /* CFG_H */
+#endif /* SEGATEXD__CFG_H */
