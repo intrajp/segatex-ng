@@ -1,4 +1,6 @@
 /* dso.h -- 
+ *  This file contains the contents of segatex-ng.
+ *
  * Copyright 2005,2006,2009 Red Hat Inc., Durham, North Carolina.
  * All Rights Reserved.
  *
@@ -26,15 +28,15 @@
 /*
  * This is to mark functions as internal to the API
  */
-#ifndef AUDIT_HIDDEN_START
-#define AUDIT_HIDDEN_START _Pragma("GCC visibility push(hidden)")
+#ifndef SEGATEX_HIDDEN_START
+#define SEGATEX_HIDDEN_START _Pragma("GCC visibility push(hidden)")
 #endif
 
 /*
  * This ends the section that is internal to the API.
  */
-#ifndef AUDIT_HIDDEN_END
-#define AUDIT_HIDDEN_END _Pragma("GCC visibility pop")
+#ifndef SEGATEX_HIDDEN_END
+#define SEGATEX_HIDDEN_END _Pragma("GCC visibility pop")
 #endif
 
 #endif

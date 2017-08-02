@@ -1,5 +1,9 @@
 /* libaudit.h -- 
+ *  This file contains the contents of segatex-ng.
+ *
  * Copyright 2004-2017 Red Hat Inc., Durham, North Carolina.
+ * Copyright(C) Shintaro Fujiwara
+ *
  * All Rights Reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -58,347 +62,347 @@ extern "C" {
  * 2600 - 2999 future user space (maybe integrity labels and related events)
  */
 
-#define AUDIT_FIRST_USER_MSG    1100    /* First user space message */
-#define AUDIT_LAST_USER_MSG     1199    /* Last user space message */
-#define AUDIT_USER_AUTH         1100    /* User system access authentication */
-#define AUDIT_USER_ACCT         1101    /* User system access authorization */
-#define AUDIT_USER_MGMT         1102    /* User acct attribute change */
-#define AUDIT_CRED_ACQ          1103    /* User credential acquired */
-#define AUDIT_CRED_DISP         1104    /* User credential disposed */
-#define AUDIT_USER_START        1105    /* User session start */
-#define AUDIT_USER_END          1106    /* User session end */
-#define AUDIT_USER_AVC          1107    /* User space avc message */
-#define AUDIT_USER_CHAUTHTOK	1108	/* User acct password or pin changed */
-#define AUDIT_USER_ERR		1109	/* User acct state error */
-#define AUDIT_CRED_REFR         1110    /* User credential refreshed */
-#define AUDIT_USYS_CONFIG       1111    /* User space system config change */
-#define AUDIT_USER_LOGIN	1112    /* User has logged in */
-#define AUDIT_USER_LOGOUT	1113    /* User has logged out */
-#define AUDIT_ADD_USER		1114    /* User account added */
-#define AUDIT_DEL_USER		1115    /* User account deleted */
-#define AUDIT_ADD_GROUP		1116    /* Group account added */
-#define AUDIT_DEL_GROUP		1117    /* Group account deleted */
-#define AUDIT_DAC_CHECK		1118    /* User space DAC check results */
-#define AUDIT_CHGRP_ID		1119    /* User space group ID changed */
-#define AUDIT_TEST		1120	/* Used for test success messages */
-#define AUDIT_TRUSTED_APP	1121	/* Trusted app msg - freestyle text */
-#define AUDIT_USER_SELINUX_ERR	1122	/* SE Linux user space error */
-#define AUDIT_USER_CMD		1123	/* User shell command and args */
-#define AUDIT_USER_TTY		1124	/* Non-ICANON TTY input meaning */
-#define AUDIT_CHUSER_ID		1125	/* Changed user ID supplemental data */
-#define AUDIT_GRP_AUTH		1126	/* Authentication for group password */
-#define AUDIT_SYSTEM_BOOT	1127	/* System boot */
-#define AUDIT_SYSTEM_SHUTDOWN	1128	/* System shutdown */
-#define AUDIT_SYSTEM_RUNLEVEL	1129	/* System runlevel change */
-#define AUDIT_SERVICE_START	1130	/* Service (daemon) start */
-#define AUDIT_SERVICE_STOP	1131	/* Service (daemon) stop */
-#define AUDIT_GRP_MGMT		1132	/* Group account attr was modified */
-#define AUDIT_GRP_CHAUTHTOK	1133	/* Group acct password or pin changed */
-#define AUDIT_MAC_CHECK		1134    /* User space MAC decision results */
-#define AUDIT_ACCT_LOCK		1135    /* User's account locked by admin */
-#define AUDIT_ACCT_UNLOCK	1136    /* User's account unlocked by admin */
+#define SEGATEX_FIRST_USER_MSG    1100    /* First user space message */
+#define SEGATEX_LAST_USER_MSG     1199    /* Last user space message */
+#define SEGATEX_USER_AUTH         1100    /* User system access authentication */
+#define SEGATEX_USER_ACCT         1101    /* User system access authorization */
+#define SEGATEX_USER_MGMT         1102    /* User acct attribute change */
+#define SEGATEX_CRED_ACQ          1103    /* User credential acquired */
+#define SEGATEX_CRED_DISP         1104    /* User credential disposed */
+#define SEGATEX_USER_START        1105    /* User session start */
+#define SEGATEX_USER_END          1106    /* User session end */
+#define SEGATEX_USER_AVC          1107    /* User space avc message */
+#define SEGATEX_USER_CHAUTHTOK	1108	/* User acct password or pin changed */
+#define SEGATEX_USER_ERR		1109	/* User acct state error */
+#define SEGATEX_CRED_REFR         1110    /* User credential refreshed */
+#define SEGATEX_USYS_CONFIG       1111    /* User space system config change */
+#define SEGATEX_USER_LOGIN	1112    /* User has logged in */
+#define SEGATEX_USER_LOGOUT	1113    /* User has logged out */
+#define SEGATEX_ADD_USER		1114    /* User account added */
+#define SEGATEX_DEL_USER		1115    /* User account deleted */
+#define SEGATEX_ADD_GROUP		1116    /* Group account added */
+#define SEGATEX_DEL_GROUP		1117    /* Group account deleted */
+#define SEGATEX_DAC_CHECK		1118    /* User space DAC check results */
+#define SEGATEX_CHGRP_ID		1119    /* User space group ID changed */
+#define SEGATEX_TEST		1120	/* Used for test success messages */
+#define SEGATEX_TRUSTED_APP	1121	/* Trusted app msg - freestyle text */
+#define SEGATEX_USER_SELINUX_ERR	1122	/* SE Linux user space error */
+#define SEGATEX_USER_CMD		1123	/* User shell command and args */
+#define SEGATEX_USER_TTY		1124	/* Non-ICANON TTY input meaning */
+#define SEGATEX_CHUSER_ID		1125	/* Changed user ID supplemental data */
+#define SEGATEX_GRP_AUTH		1126	/* Authentication for group password */
+#define SEGATEX_SYSTEM_BOOT	1127	/* System boot */
+#define SEGATEX_SYSTEM_SHUTDOWN	1128	/* System shutdown */
+#define SEGATEX_SYSTEM_RUNLEVEL	1129	/* System runlevel change */
+#define SEGATEX_SERVICE_START	1130	/* Service (daemon) start */
+#define SEGATEX_SERVICE_STOP	1131	/* Service (daemon) stop */
+#define SEGATEX_GRP_MGMT		1132	/* Group account attr was modified */
+#define SEGATEX_GRP_CHAUTHTOK	1133	/* Group acct password or pin changed */
+#define SEGATEX_MAC_CHECK		1134    /* User space MAC decision results */
+#define SEGATEX_ACCT_LOCK		1135    /* User's account locked by admin */
+#define SEGATEX_ACCT_UNLOCK	1136    /* User's account unlocked by admin */
 
-#define AUDIT_FIRST_DAEMON	1200
-#define AUDIT_LAST_DAEMON	1299
-#define AUDIT_DAEMON_RECONFIG	1204	/* Auditd should reconfigure */
-#define AUDIT_DAEMON_ROTATE	1205	/* Auditd should rotate logs */
-#define AUDIT_DAEMON_RESUME	1206	/* Auditd should resume logging */
-#define AUDIT_DAEMON_ACCEPT	1207    /* Auditd accepted remote connection */
-#define AUDIT_DAEMON_CLOSE	1208    /* Auditd closed remote connection */
-#define AUDIT_DAEMON_ERR	1209    /* Auditd internal error */
+#define SEGATEX_FIRST_DAEMON	1200
+#define SEGATEX_LAST_DAEMON	1299
+#define SEGATEX_DAEMON_RECONFIG	1204	/* Auditd should reconfigure */
+#define SEGATEX_DAEMON_ROTATE	1205	/* Auditd should rotate logs */
+#define SEGATEX_DAEMON_RESUME	1206	/* Auditd should resume logging */
+#define SEGATEX_DAEMON_ACCEPT	1207    /* Auditd accepted remote connection */
+#define SEGATEX_DAEMON_CLOSE	1208    /* Auditd closed remote connection */
+#define SEGATEX_DAEMON_ERR	1209    /* Auditd internal error */
 
-#define AUDIT_FIRST_EVENT	1300
-#define AUDIT_LAST_EVENT	1399
+#define SEGATEX_FIRST_EVENT	1300
+#define SEGATEX_LAST_EVENT	1399
 
-#define AUDIT_FIRST_SELINUX	1400
-#define AUDIT_LAST_SELINUX	1499
+#define SEGATEX_FIRST_SELINUX	1400
+#define SEGATEX_LAST_SELINUX	1499
 
-#define AUDIT_FIRST_APPARMOR		1500
-#define AUDIT_LAST_APPARMOR		1599
-#ifndef AUDIT_AA
-#define AUDIT_AA			1500	/* Not upstream yet */
-#define AUDIT_APPARMOR_AUDIT		1501
-#define AUDIT_APPARMOR_ALLOWED		1502
-#define AUDIT_APPARMOR_DENIED		1503
-#define AUDIT_APPARMOR_HINT		1504
-#define AUDIT_APPARMOR_STATUS		1505
-#define AUDIT_APPARMOR_ERROR		1506
+#define SEGATEX_FIRST_APPARMOR		1500
+#define SEGATEX_LAST_APPARMOR		1599
+#ifndef SEGATEX_AA
+#define SEGATEX_AA			1500	/* Not upstream yet */
+#define SEGATEX_APPARMOR_SEGATEX		1501
+#define SEGATEX_APPARMOR_ALLOWED		1502
+#define SEGATEX_APPARMOR_DENIED		1503
+#define SEGATEX_APPARMOR_HINT		1504
+#define SEGATEX_APPARMOR_STATUS		1505
+#define SEGATEX_APPARMOR_ERROR		1506
 #endif
 
-#define AUDIT_FIRST_KERN_CRYPTO_MSG	1600
-#define AUDIT_LAST_KERN_CRYPTO_MSG	1699
+#define SEGATEX_FIRST_KERN_CRYPTO_MSG	1600
+#define SEGATEX_LAST_KERN_CRYPTO_MSG	1699
 
-#define AUDIT_FIRST_KERN_ANOM_MSG	1700
-#define AUDIT_LAST_KERN_ANOM_MSG	1799
+#define SEGATEX_FIRST_KERN_ANOM_MSG	1700
+#define SEGATEX_LAST_KERN_ANOM_MSG	1799
 
-#define AUDIT_INTEGRITY_FIRST_MSG	1800
-#define AUDIT_INTEGRITY_LAST_MSG	1899
-#ifndef AUDIT_INTEGRITY_DATA
-#define AUDIT_INTEGRITY_DATA		1800 /* Data integrity verification */
-#define AUDIT_INTEGRITY_METADATA 	1801 // Metadata integrity verification
-#define AUDIT_INTEGRITY_STATUS		1802 /* Integrity enable status */
-#define AUDIT_INTEGRITY_HASH		1803 /* Integrity HASH type */
-#define AUDIT_INTEGRITY_PCR		1804 /* PCR invalidation msgs */
-#define AUDIT_INTEGRITY_RULE		1805 /* Policy rule */
+#define SEGATEX_INTEGRITY_FIRST_MSG	1800
+#define SEGATEX_INTEGRITY_LAST_MSG	1899
+#ifndef SEGATEX_INTEGRITY_DATA
+#define SEGATEX_INTEGRITY_DATA		1800 /* Data integrity verification */
+#define SEGATEX_INTEGRITY_METADATA 	1801 // Metadata integrity verification
+#define SEGATEX_INTEGRITY_STATUS		1802 /* Integrity enable status */
+#define SEGATEX_INTEGRITY_HASH		1803 /* Integrity HASH type */
+#define SEGATEX_INTEGRITY_PCR		1804 /* PCR invalidation msgs */
+#define SEGATEX_INTEGRITY_RULE		1805 /* Policy rule */
 #endif
 
-#define AUDIT_FIRST_ANOM_MSG		2100
-#define AUDIT_LAST_ANOM_MSG		2199
-#define AUDIT_ANOM_LOGIN_FAILURES	2100 // Failed login limit reached
-#define AUDIT_ANOM_LOGIN_TIME		2101 // Login attempted at bad time
-#define AUDIT_ANOM_LOGIN_SESSIONS	2102 // Max concurrent sessions reached
-#define AUDIT_ANOM_LOGIN_ACCT		2103 // Login attempted to watched acct
-#define AUDIT_ANOM_LOGIN_LOCATION	2104 // Login from forbidden location
-#define AUDIT_ANOM_MAX_DAC		2105 // Max DAC failures reached
-#define AUDIT_ANOM_MAX_MAC		2106 // Max MAC failures reached
-#define AUDIT_ANOM_AMTU_FAIL		2107 // AMTU failure
-#define AUDIT_ANOM_RBAC_FAIL		2108 // RBAC self test failure
-#define AUDIT_ANOM_RBAC_INTEGRITY_FAIL	2109 // RBAC file integrity failure
-#define AUDIT_ANOM_CRYPTO_FAIL		2110 // Crypto system test failure
-#define AUDIT_ANOM_ACCESS_FS		2111 // Access of file or dir
-#define AUDIT_ANOM_EXEC			2112 // Execution of file
-#define AUDIT_ANOM_MK_EXEC		2113 // Make an executable
-#define AUDIT_ANOM_ADD_ACCT		2114 // Adding an acct
-#define AUDIT_ANOM_DEL_ACCT		2115 // Deleting an acct
-#define AUDIT_ANOM_MOD_ACCT		2116 // Changing an acct
-#define AUDIT_ANOM_ROOT_TRANS		2117 // User became root
+#define SEGATEX_FIRST_ANOM_MSG		2100
+#define SEGATEX_LAST_ANOM_MSG		2199
+#define SEGATEX_ANOM_LOGIN_FAILURES	2100 // Failed login limit reached
+#define SEGATEX_ANOM_LOGIN_TIME		2101 // Login attempted at bad time
+#define SEGATEX_ANOM_LOGIN_SESSIONS	2102 // Max concurrent sessions reached
+#define SEGATEX_ANOM_LOGIN_ACCT		2103 // Login attempted to watched acct
+#define SEGATEX_ANOM_LOGIN_LOCATION	2104 // Login from forbidden location
+#define SEGATEX_ANOM_MAX_DAC		2105 // Max DAC failures reached
+#define SEGATEX_ANOM_MAX_MAC		2106 // Max MAC failures reached
+#define SEGATEX_ANOM_AMTU_FAIL		2107 // AMTU failure
+#define SEGATEX_ANOM_RBAC_FAIL		2108 // RBAC self test failure
+#define SEGATEX_ANOM_RBAC_INTEGRITY_FAIL	2109 // RBAC file integrity failure
+#define SEGATEX_ANOM_CRYPTO_FAIL		2110 // Crypto system test failure
+#define SEGATEX_ANOM_ACCESS_FS		2111 // Access of file or dir
+#define SEGATEX_ANOM_EXEC			2112 // Execution of file
+#define SEGATEX_ANOM_MK_EXEC		2113 // Make an executable
+#define SEGATEX_ANOM_ADD_ACCT		2114 // Adding an acct
+#define SEGATEX_ANOM_DEL_ACCT		2115 // Deleting an acct
+#define SEGATEX_ANOM_MOD_ACCT		2116 // Changing an acct
+#define SEGATEX_ANOM_ROOT_TRANS		2117 // User became root
 
-#define AUDIT_FIRST_ANOM_RESP		2200
-#define AUDIT_LAST_ANOM_RESP		2299
-#define AUDIT_RESP_ANOMALY		2200 /* Anomaly not reacted to */
-#define AUDIT_RESP_ALERT		2201 /* Alert email was sent */
-#define AUDIT_RESP_KILL_PROC		2202 /* Kill program */
-#define AUDIT_RESP_TERM_ACCESS		2203 /* Terminate session */
-#define AUDIT_RESP_ACCT_REMOTE		2204 /* Acct locked from remote access*/
-#define AUDIT_RESP_ACCT_LOCK_TIMED	2205 /* User acct locked for time */
-#define AUDIT_RESP_ACCT_UNLOCK_TIMED	2206 /* User acct unlocked from time */
-#define AUDIT_RESP_ACCT_LOCK		2207 /* User acct was locked */
-#define AUDIT_RESP_TERM_LOCK		2208 /* Terminal was locked */
-#define AUDIT_RESP_SEBOOL		2209 /* Set an SE Linux boolean */
-#define AUDIT_RESP_EXEC			2210 /* Execute a script */
-#define AUDIT_RESP_SINGLE		2211 /* Go to single user mode */
-#define AUDIT_RESP_HALT			2212 /* take the system down */
+#define SEGATEX_FIRST_ANOM_RESP		2200
+#define SEGATEX_LAST_ANOM_RESP		2299
+#define SEGATEX_RESP_ANOMALY		2200 /* Anomaly not reacted to */
+#define SEGATEX_RESP_ALERT		2201 /* Alert email was sent */
+#define SEGATEX_RESP_KILL_PROC		2202 /* Kill program */
+#define SEGATEX_RESP_TERM_ACCESS		2203 /* Terminate session */
+#define SEGATEX_RESP_ACCT_REMOTE		2204 /* Acct locked from remote access*/
+#define SEGATEX_RESP_ACCT_LOCK_TIMED	2205 /* User acct locked for time */
+#define SEGATEX_RESP_ACCT_UNLOCK_TIMED	2206 /* User acct unlocked from time */
+#define SEGATEX_RESP_ACCT_LOCK		2207 /* User acct was locked */
+#define SEGATEX_RESP_TERM_LOCK		2208 /* Terminal was locked */
+#define SEGATEX_RESP_SEBOOL		2209 /* Set an SE Linux boolean */
+#define SEGATEX_RESP_EXEC			2210 /* Execute a script */
+#define SEGATEX_RESP_SINGLE		2211 /* Go to single user mode */
+#define SEGATEX_RESP_HALT			2212 /* take the system down */
 
-#define AUDIT_FIRST_USER_LSPP_MSG	2300
-#define AUDIT_LAST_USER_LSPP_MSG	2399
-#define AUDIT_USER_ROLE_CHANGE		2300 /* User changed to a new role */
-#define AUDIT_ROLE_ASSIGN		2301 /* Admin assigned user to role */
-#define AUDIT_ROLE_REMOVE		2302 /* Admin removed user from role */
-#define AUDIT_LABEL_OVERRIDE		2303 /* Admin is overriding a label */
-#define AUDIT_LABEL_LEVEL_CHANGE	2304 /* Object's level was changed */
-#define AUDIT_USER_LABELED_EXPORT	2305 /* Object exported with label */
-#define AUDIT_USER_UNLABELED_EXPORT	2306 /* Object exported without label */
-#define AUDIT_DEV_ALLOC			2307 /* Device was allocated */
-#define AUDIT_DEV_DEALLOC		2308 /* Device was deallocated */
-#define AUDIT_FS_RELABEL		2309 /* Filesystem relabeled */
-#define AUDIT_USER_MAC_POLICY_LOAD	2310 /* Userspc daemon loaded policy */
-#define AUDIT_ROLE_MODIFY		2311 /* Admin modified a role */
-#define AUDIT_USER_MAC_CONFIG_CHANGE	2312 /* Change made to MAC policy */
+#define SEGATEX_FIRST_USER_LSPP_MSG	2300
+#define SEGATEX_LAST_USER_LSPP_MSG	2399
+#define SEGATEX_USER_ROLE_CHANGE		2300 /* User changed to a new role */
+#define SEGATEX_ROLE_ASSIGN		2301 /* Admin assigned user to role */
+#define SEGATEX_ROLE_REMOVE		2302 /* Admin removed user from role */
+#define SEGATEX_LABEL_OVERRIDE		2303 /* Admin is overriding a label */
+#define SEGATEX_LABEL_LEVEL_CHANGE	2304 /* Object's level was changed */
+#define SEGATEX_USER_LABELED_EXPORT	2305 /* Object exported with label */
+#define SEGATEX_USER_UNLABELED_EXPORT	2306 /* Object exported without label */
+#define SEGATEX_DEV_ALLOC			2307 /* Device was allocated */
+#define SEGATEX_DEV_DEALLOC		2308 /* Device was deallocated */
+#define SEGATEX_FS_RELABEL		2309 /* Filesystem relabeled */
+#define SEGATEX_USER_MAC_POLICY_LOAD	2310 /* Userspc daemon loaded policy */
+#define SEGATEX_ROLE_MODIFY		2311 /* Admin modified a role */
+#define SEGATEX_USER_MAC_CONFIG_CHANGE	2312 /* Change made to MAC policy */
 
-#define AUDIT_FIRST_CRYPTO_MSG		2400
-#define AUDIT_CRYPTO_TEST_USER		2400 /* Crypto test results */
-#define AUDIT_CRYPTO_PARAM_CHANGE_USER	2401 /* Crypto attribute change */
-#define AUDIT_CRYPTO_LOGIN		2402 /* Logged in as crypto officer */
-#define AUDIT_CRYPTO_LOGOUT		2403 /* Logged out from crypto */
-#define AUDIT_CRYPTO_KEY_USER		2404 /* Create,delete,negotiate */
-#define AUDIT_CRYPTO_FAILURE_USER	2405 /* Fail decrypt,encrypt,randomiz */
-#define AUDIT_CRYPTO_REPLAY_USER	2406 /* Crypto replay detected */
-#define AUDIT_CRYPTO_SESSION		2407 /* Record parameters set during
+#define SEGATEX_FIRST_CRYPTO_MSG		2400
+#define SEGATEX_CRYPTO_TEST_USER		2400 /* Crypto test results */
+#define SEGATEX_CRYPTO_PARAM_CHANGE_USER	2401 /* Crypto attribute change */
+#define SEGATEX_CRYPTO_LOGIN		2402 /* Logged in as crypto officer */
+#define SEGATEX_CRYPTO_LOGOUT		2403 /* Logged out from crypto */
+#define SEGATEX_CRYPTO_KEY_USER		2404 /* Create,delete,negotiate */
+#define SEGATEX_CRYPTO_FAILURE_USER	2405 /* Fail decrypt,encrypt,randomiz */
+#define SEGATEX_CRYPTO_REPLAY_USER	2406 /* Crypto replay detected */
+#define SEGATEX_CRYPTO_SESSION		2407 /* Record parameters set during
 						TLS session establishment */
-#define AUDIT_CRYPTO_IKE_SA		2408 /* Record parameters related to
+#define SEGATEX_CRYPTO_IKE_SA		2408 /* Record parameters related to
 						IKE SA */
-#define AUDIT_CRYPTO_IPSEC_SA		2409 /* Record parameters related to
+#define SEGATEX_CRYPTO_IPSEC_SA		2409 /* Record parameters related to
 						IPSEC SA */
 
-#define AUDIT_LAST_CRYPTO_MSG		2499
+#define SEGATEX_LAST_CRYPTO_MSG		2499
 
-#define AUDIT_FIRST_VIRT_MSG		2500
-#define AUDIT_VIRT_CONTROL		2500 /* Start, Pause, Stop VM */
-#define AUDIT_VIRT_RESOURCE		2501 /* Resource assignment */
-#define AUDIT_VIRT_MACHINE_ID		2502 /* Binding of label to VM */
-#define AUDIT_VIRT_INTEGRITY_CHECK	2503 /* Guest integrity results */
-#define AUDIT_VIRT_CREATE		2504 /* Creation of guest image */
-#define AUDIT_VIRT_DESTROY		2505 /* Destruction of guest image */
-#define AUDIT_VIRT_MIGRATE_IN		2506 /* Inbound guest migration info */
-#define AUDIT_VIRT_MIGRATE_OUT		2507 /* Outbound guest migration info */
+#define SEGATEX_FIRST_VIRT_MSG		2500
+#define SEGATEX_VIRT_CONTROL		2500 /* Start, Pause, Stop VM */
+#define SEGATEX_VIRT_RESOURCE		2501 /* Resource assignment */
+#define SEGATEX_VIRT_MACHINE_ID		2502 /* Binding of label to VM */
+#define SEGATEX_VIRT_INTEGRITY_CHECK	2503 /* Guest integrity results */
+#define SEGATEX_VIRT_CREATE		2504 /* Creation of guest image */
+#define SEGATEX_VIRT_DESTROY		2505 /* Destruction of guest image */
+#define SEGATEX_VIRT_MIGRATE_IN		2506 /* Inbound guest migration info */
+#define SEGATEX_VIRT_MIGRATE_OUT		2507 /* Outbound guest migration info */
 
-#define AUDIT_LAST_VIRT_MSG		2599
+#define SEGATEX_LAST_VIRT_MSG		2599
 
-#ifndef AUDIT_FIRST_USER_MSG2
-#define AUDIT_FIRST_USER_MSG2  2100    /* More userspace messages */
-#define AUDIT_LAST_USER_MSG2   2999
+#ifndef SEGATEX_FIRST_USER_MSG2
+#define SEGATEX_FIRST_USER_MSG2  2100    /* More userspace messages */
+#define SEGATEX_LAST_USER_MSG2   2999
 #endif
 
 /* New kernel event definitions since 2.6.30 */
-#ifndef AUDIT_SET_FEATURE
-#define AUDIT_SET_FEATURE       1018    /* Turn an audit feature on or off */
+#ifndef SEGATEX_SET_FEATURE
+#define SEGATEX_SET_FEATURE       1018    /* Turn an audit feature on or off */
 #endif
 
-#ifndef AUDIT_GET_FEATURE
-#define AUDIT_GET_FEATURE       1019    /* Get which features are enabled */
+#ifndef SEGATEX_GET_FEATURE
+#define SEGATEX_GET_FEATURE       1019    /* Get which features are enabled */
 #endif
 
-#ifndef AUDIT_MMAP
-#define AUDIT_MMAP		1323 /* Descriptor and flags in mmap */
+#ifndef SEGATEX_MMAP
+#define SEGATEX_MMAP		1323 /* Descriptor and flags in mmap */
 #endif
 
-#ifndef AUDIT_NETFILTER_PKT
-#define AUDIT_NETFILTER_PKT	1324 /* Packets traversing netfilter chains */
+#ifndef SEGATEX_NETFILTER_PKT
+#define SEGATEX_NETFILTER_PKT	1324 /* Packets traversing netfilter chains */
 #endif
-#ifndef AUDIT_NETFILTER_CFG
-#define AUDIT_NETFILTER_CFG	1325 /* Netfilter chain modifications */
-#endif
-
-#ifndef AUDIT_SECCOMP
-#define AUDIT_SECCOMP		1326 /* Secure Computing event */
+#ifndef SEGATEX_NETFILTER_CFG
+#define SEGATEX_NETFILTER_CFG	1325 /* Netfilter chain modifications */
 #endif
 
-#ifndef AUDIT_PROCTITLE
-#define AUDIT_PROCTITLE		1327 /* Process Title info */
+#ifndef SEGATEX_SECCOMP
+#define SEGATEX_SECCOMP		1326 /* Secure Computing event */
 #endif
 
-#undef AUDIT_FEATURE_CHANGE
-#ifndef AUDIT_FEATURE_CHANGE
-#define AUDIT_FEATURE_CHANGE	1328 /* Audit feature changed value */
+#ifndef SEGATEX_PROCTITLE
+#define SEGATEX_PROCTITLE		1327 /* Process Title info */
 #endif
 
-#ifndef AUDIT_REPLACE
-#define AUDIT_REPLACE           1329 /* Auditd replaced because probe failed */
+#undef SEGATEX_FEATURE_CHANGE
+#ifndef SEGATEX_FEATURE_CHANGE
+#define SEGATEX_FEATURE_CHANGE	1328 /* Audit feature changed value */
 #endif
 
-#ifndef AUDIT_KERN_MODULE
-#define AUDIT_KERN_MODULE	1330 /* Kernel Module events */
+#ifndef SEGATEX_REPLACE
+#define SEGATEX_REPLACE           1329 /* Auditd replaced because probe failed */
 #endif
 
-#ifndef AUDIT_ANOM_LINK
-#define AUDIT_ANOM_LINK		1702 /* Suspicious use of file links */
+#ifndef SEGATEX_KERN_MODULE
+#define SEGATEX_KERN_MODULE	1330 /* Kernel Module events */
+#endif
+
+#ifndef SEGATEX_ANOM_LINK
+#define SEGATEX_ANOM_LINK		1702 /* Suspicious use of file links */
 #endif
 
 /* This is related to the filterkey patch */
-#define AUDIT_KEY_SEPARATOR 0x01
+#define SEGATEX_KEY_SEPARATOR 0x01
 
 /* These are used in filter control */
-#define AUDIT_FILTER_EXCLUDE	AUDIT_FILTER_TYPE
-#define AUDIT_FILTER_MASK	0x07	/* Mask to get actual filter */
-#define AUDIT_FILTER_UNSET	0x80	/* This value means filter is unset */
+#define SEGATEX_FILTER_EXCLUDE	SEGATEX_FILTER_TYPE
+#define SEGATEX_FILTER_MASK	0x07	/* Mask to get actual filter */
+#define SEGATEX_FILTER_UNSET	0x80	/* This value means filter is unset */
 
 /* Status symbol mask values */
-#ifndef AUDIT_STATUS_LOST
-#define AUDIT_STATUS_LOST               0x0040
+#ifndef SEGATEX_STATUS_LOST
+#define SEGATEX_STATUS_LOST               0x0040
 #endif
 
 /* These defines describe what features are in the kernel */
-#ifndef AUDIT_FEATURE_BITMAP_BACKLOG_LIMIT
-#define AUDIT_FEATURE_BITMAP_BACKLOG_LIMIT      0x00000001
+#ifndef SEGATEX_FEATURE_BITMAP_BACKLOG_LIMIT
+#define SEGATEX_FEATURE_BITMAP_BACKLOG_LIMIT      0x00000001
 #endif
-#ifndef AUDIT_FEATURE_BITMAP_BACKLOG_WAIT_TIME
-#define AUDIT_FEATURE_BITMAP_BACKLOG_WAIT_TIME  0x00000002
+#ifndef SEGATEX_FEATURE_BITMAP_BACKLOG_WAIT_TIME
+#define SEGATEX_FEATURE_BITMAP_BACKLOG_WAIT_TIME  0x00000002
 #endif
-#ifndef AUDIT_FEATURE_BITMAP_EXECUTABLE_PATH
-#define AUDIT_FEATURE_BITMAP_EXECUTABLE_PATH    0x00000004
+#ifndef SEGATEX_FEATURE_BITMAP_EXECUTABLE_PATH
+#define SEGATEX_FEATURE_BITMAP_EXECUTABLE_PATH    0x00000004
 #endif
-#ifndef AUDIT_FEATURE_BITMAP_EXCLUDE_EXTEND
-#define AUDIT_FEATURE_BITMAP_EXCLUDE_EXTEND     0x00000008
+#ifndef SEGATEX_FEATURE_BITMAP_EXCLUDE_EXTEND
+#define SEGATEX_FEATURE_BITMAP_EXCLUDE_EXTEND     0x00000008
 #endif
-#ifndef AUDIT_FEATURE_BITMAP_SESSIONID_FILTER
-#define AUDIT_FEATURE_BITMAP_SESSIONID_FILTER   0x00000010
+#ifndef SEGATEX_FEATURE_BITMAP_SESSIONID_FILTER
+#define SEGATEX_FEATURE_BITMAP_SESSIONID_FILTER   0x00000010
 #endif
-#ifndef AUDIT_FEATURE_BITMAP_LOST_RESET
-#define AUDIT_FEATURE_BITMAP_LOST_RESET		0x00000020
+#ifndef SEGATEX_FEATURE_BITMAP_LOST_RESET
+#define SEGATEX_FEATURE_BITMAP_LOST_RESET		0x00000020
 #endif
 
 /* Defines for interfield comparison update */
-#ifndef AUDIT_OBJ_UID
-#define AUDIT_OBJ_UID  109
+#ifndef SEGATEX_OBJ_UID
+#define SEGATEX_OBJ_UID  109
 #endif
-#ifndef AUDIT_OBJ_GID
-#define AUDIT_OBJ_GID  110
+#ifndef SEGATEX_OBJ_GID
+#define SEGATEX_OBJ_GID  110
 #endif
-#ifndef AUDIT_FIELD_COMPARE
-#define AUDIT_FIELD_COMPARE 111
+#ifndef SEGATEX_FIELD_COMPARE
+#define SEGATEX_FIELD_COMPARE 111
 #endif
-#ifndef AUDIT_EXE
-#define AUDIT_EXE 112
-#endif
-
-#ifndef AUDIT_SESSIONID
-#define AUDIT_SESSIONID 25
+#ifndef SEGATEX_EXE
+#define SEGATEX_EXE 112
 #endif
 
-#ifndef AUDIT_COMPARE_UID_TO_OBJ_UID
-#define AUDIT_COMPARE_UID_TO_OBJ_UID   1
+#ifndef SEGATEX_SESSIONID
+#define SEGATEX_SESSIONID 25
 #endif
-#ifndef AUDIT_COMPARE_GID_TO_OBJ_GID
-#define AUDIT_COMPARE_GID_TO_OBJ_GID   2
+
+#ifndef SEGATEX_COMPARE_UID_TO_OBJ_UID
+#define SEGATEX_COMPARE_UID_TO_OBJ_UID   1
 #endif
-#ifndef AUDIT_COMPARE_EUID_TO_OBJ_UID
-#define AUDIT_COMPARE_EUID_TO_OBJ_UID  3
+#ifndef SEGATEX_COMPARE_GID_TO_OBJ_GID
+#define SEGATEX_COMPARE_GID_TO_OBJ_GID   2
 #endif
-#ifndef AUDIT_COMPARE_EGID_TO_OBJ_GID
-#define AUDIT_COMPARE_EGID_TO_OBJ_GID  4
+#ifndef SEGATEX_COMPARE_EUID_TO_OBJ_UID
+#define SEGATEX_COMPARE_EUID_TO_OBJ_UID  3
 #endif
-#ifndef AUDIT_COMPARE_AUID_TO_OBJ_UID
-#define AUDIT_COMPARE_AUID_TO_OBJ_UID  5
+#ifndef SEGATEX_COMPARE_EGID_TO_OBJ_GID
+#define SEGATEX_COMPARE_EGID_TO_OBJ_GID  4
 #endif
-#ifndef AUDIT_COMPARE_SUID_TO_OBJ_UID
-#define AUDIT_COMPARE_SUID_TO_OBJ_UID  6
+#ifndef SEGATEX_COMPARE_AUID_TO_OBJ_UID
+#define SEGATEX_COMPARE_AUID_TO_OBJ_UID  5
 #endif
-#ifndef AUDIT_COMPARE_SGID_TO_OBJ_GID
-#define AUDIT_COMPARE_SGID_TO_OBJ_GID  7
+#ifndef SEGATEX_COMPARE_SUID_TO_OBJ_UID
+#define SEGATEX_COMPARE_SUID_TO_OBJ_UID  6
 #endif
-#ifndef AUDIT_COMPARE_FSUID_TO_OBJ_UID
-#define AUDIT_COMPARE_FSUID_TO_OBJ_UID 8
+#ifndef SEGATEX_COMPARE_SGID_TO_OBJ_GID
+#define SEGATEX_COMPARE_SGID_TO_OBJ_GID  7
 #endif
-#ifndef AUDIT_COMPARE_FSGID_TO_OBJ_GID
-#define AUDIT_COMPARE_FSGID_TO_OBJ_GID 9
+#ifndef SEGATEX_COMPARE_FSUID_TO_OBJ_UID
+#define SEGATEX_COMPARE_FSUID_TO_OBJ_UID 8
 #endif
-#ifndef AUDIT_COMPARE_UID_TO_AUID
-#define AUDIT_COMPARE_UID_TO_AUID      10
+#ifndef SEGATEX_COMPARE_FSGID_TO_OBJ_GID
+#define SEGATEX_COMPARE_FSGID_TO_OBJ_GID 9
 #endif
-#ifndef AUDIT_COMPARE_UID_TO_EUID
-#define AUDIT_COMPARE_UID_TO_EUID      11
+#ifndef SEGATEX_COMPARE_UID_TO_AUID
+#define SEGATEX_COMPARE_UID_TO_AUID      10
 #endif
-#ifndef AUDIT_COMPARE_UID_TO_FSUID
-#define AUDIT_COMPARE_UID_TO_FSUID     12
+#ifndef SEGATEX_COMPARE_UID_TO_EUID
+#define SEGATEX_COMPARE_UID_TO_EUID      11
 #endif
-#ifndef AUDIT_COMPARE_UID_TO_SUID
-#define AUDIT_COMPARE_UID_TO_SUID      13
+#ifndef SEGATEX_COMPARE_UID_TO_FSUID
+#define SEGATEX_COMPARE_UID_TO_FSUID     12
 #endif
-#ifndef AUDIT_COMPARE_AUID_TO_FSUID
-#define AUDIT_COMPARE_AUID_TO_FSUID    14
+#ifndef SEGATEX_COMPARE_UID_TO_SUID
+#define SEGATEX_COMPARE_UID_TO_SUID      13
 #endif
-#ifndef AUDIT_COMPARE_AUID_TO_SUID
-#define AUDIT_COMPARE_AUID_TO_SUID     15
+#ifndef SEGATEX_COMPARE_AUID_TO_FSUID
+#define SEGATEX_COMPARE_AUID_TO_FSUID    14
 #endif
-#ifndef AUDIT_COMPARE_AUID_TO_EUID
-#define AUDIT_COMPARE_AUID_TO_EUID     16
+#ifndef SEGATEX_COMPARE_AUID_TO_SUID
+#define SEGATEX_COMPARE_AUID_TO_SUID     15
 #endif
-#ifndef AUDIT_COMPARE_EUID_TO_SUID
-#define AUDIT_COMPARE_EUID_TO_SUID     17
+#ifndef SEGATEX_COMPARE_AUID_TO_EUID
+#define SEGATEX_COMPARE_AUID_TO_EUID     16
 #endif
-#ifndef AUDIT_COMPARE_EUID_TO_FSUID
-#define AUDIT_COMPARE_EUID_TO_FSUID    18
+#ifndef SEGATEX_COMPARE_EUID_TO_SUID
+#define SEGATEX_COMPARE_EUID_TO_SUID     17
 #endif
-#ifndef AUDIT_COMPARE_SUID_TO_FSUID
-#define AUDIT_COMPARE_SUID_TO_FSUID    19
+#ifndef SEGATEX_COMPARE_EUID_TO_FSUID
+#define SEGATEX_COMPARE_EUID_TO_FSUID    18
 #endif
-#ifndef AUDIT_COMPARE_GID_TO_EGID
-#define AUDIT_COMPARE_GID_TO_EGID      20
+#ifndef SEGATEX_COMPARE_SUID_TO_FSUID
+#define SEGATEX_COMPARE_SUID_TO_FSUID    19
 #endif
-#ifndef AUDIT_COMPARE_GID_TO_FSGID
-#define AUDIT_COMPARE_GID_TO_FSGID     21
+#ifndef SEGATEX_COMPARE_GID_TO_EGID
+#define SEGATEX_COMPARE_GID_TO_EGID      20
 #endif
-#ifndef AUDIT_COMPARE_GID_TO_SGID
-#define AUDIT_COMPARE_GID_TO_SGID      22
+#ifndef SEGATEX_COMPARE_GID_TO_FSGID
+#define SEGATEX_COMPARE_GID_TO_FSGID     21
 #endif
-#ifndef AUDIT_COMPARE_EGID_TO_FSGID
-#define AUDIT_COMPARE_EGID_TO_FSGID    23
+#ifndef SEGATEX_COMPARE_GID_TO_SGID
+#define SEGATEX_COMPARE_GID_TO_SGID      22
 #endif
-#ifndef AUDIT_COMPARE_EGID_TO_SGID
-#define AUDIT_COMPARE_EGID_TO_SGID     24
+#ifndef SEGATEX_COMPARE_EGID_TO_FSGID
+#define SEGATEX_COMPARE_EGID_TO_FSGID    23
 #endif
-#ifndef AUDIT_COMPARE_SGID_TO_FSGID
-#define AUDIT_COMPARE_SGID_TO_FSGID    25
+#ifndef SEGATEX_COMPARE_EGID_TO_SGID
+#define SEGATEX_COMPARE_EGID_TO_SGID     24
+#endif
+#ifndef SEGATEX_COMPARE_SGID_TO_FSGID
+#define SEGATEX_COMPARE_SGID_TO_FSGID    25
 #endif
 
 #ifndef EM_ARM
@@ -408,16 +412,16 @@ extern "C" {
 #define EM_AARCH64 183
 #endif
 
-#ifndef AUDIT_ARCH_AARCH64
-#define AUDIT_ARCH_AARCH64	(EM_AARCH64|__AUDIT_ARCH_64BIT|__AUDIT_ARCH_LE)
+#ifndef SEGATEX_ARCH_AARCH64
+#define SEGATEX_ARCH_AARCH64	(EM_AARCH64|__SEGATEX_ARCH_64BIT|__SEGATEX_ARCH_LE)
 #endif
 
-#ifndef AUDIT_ARCH_PPC64LE
-#define AUDIT_ARCH_PPC64LE	(EM_PPC64|__AUDIT_ARCH_64BIT|__AUDIT_ARCH_LE)
+#ifndef SEGATEX_ARCH_PPC64LE
+#define SEGATEX_ARCH_PPC64LE	(EM_PPC64|__SEGATEX_ARCH_64BIT|__SEGATEX_ARCH_LE)
 #endif
 
 /* This is the character that separates event data from enrichment fields */
-#define AUDIT_INTERP_SEPARATOR 0x1D
+#define SEGATEX_INTERP_SEPARATOR 0x1D
 
 //////////////////////////////////////////////////////
 // This is an external ABI. Any changes in here will
@@ -426,40 +430,40 @@ extern "C" {
 // know of any.
 //
 /* data structure for who signaled the audit daemon */
-struct audit_sig_info {
+struct segatex_sig_info {
         uid_t           uid;
         pid_t           pid;
 	char		ctx[0];
 };
 
 /* defines for audit subsystem */
-#define MAX_AUDIT_MESSAGE_LENGTH    8970 // PATH_MAX*2+CONTEXT_SIZE*2+11+256+1
-struct audit_message {
+#define MAX_SEGATEX_MESSAGE_LENGTH    8970 // PATH_MAX*2+CONTEXT_SIZE*2+11+256+1
+struct segatex_message {
 	struct nlmsghdr nlh;
-	char   data[MAX_AUDIT_MESSAGE_LENGTH];
+	char   data[MAX_SEGATEX_MESSAGE_LENGTH];
 };
 
 // internal - forward declaration
 struct daemon_conf;
 
-struct audit_reply {
+struct segatex_reply {
 	int                      type;
 	int                      len;
 	struct nlmsghdr         *nlh;
-	struct audit_message     msg;
+	struct segatex_message     msg;
 
 	/* Using a union to compress this structure since only one of
 	 * the following should be valid for any packet. */
 	union {
-	struct audit_status     *status;
-	struct audit_rule_data  *ruledata;
-	struct audit_login      *login;
+	struct segatex_status     *status;
+	struct segatex_rule_data  *ruledata;
+	struct segatex_login      *login;
 	char                    *message;
 	struct nlmsgerr         *error;
-	struct audit_sig_info   *signal_info;
+	struct segatex_sig_info   *signal_info;
 	struct daemon_conf      *conf;
-#ifdef AUDIT_FEATURE_BITMAP_ALL
-	struct audit_features	*features;
+#ifdef SEGATEX_FEATURE_BITMAP_ALL
+	struct segatex_features	*features;
 #endif
 	};
 };
@@ -476,7 +480,7 @@ struct audit_reply {
  * This MUST BE fixed size for compatibility. If you are going to add
  * new member then add them into _structure_ part.
  */
-struct audit_dispatcher_header {
+struct segatex_dispatcher_header {
 	uint32_t	ver;	/* The version of this protocol */
 	uint32_t	hlen;	/* Header length */
 	uint32_t	type;	/* Message type */
@@ -515,7 +519,7 @@ typedef enum {
 	FAIL_IGNORE=0,
 	FAIL_LOG,
 	FAIL_TERMINATE
-} auditfail_t;
+} segatexfail_t;
 
 /* Messages */
 typedef enum { MSG_STDERR, MSG_SYSLOG, MSG_QUIET } message_t;
@@ -524,123 +528,124 @@ void set_sgmessage_mode(message_t mode, debug_message_t debug);
 
 /* General */
 typedef enum { GET_REPLY_BLOCKING=0, GET_REPLY_NONBLOCKING } reply_t;
-extern int  audit_open(void);
-extern void audit_close(int fd);
-extern int  audit_get_reply(int fd, struct audit_reply *rep, reply_t block, 
+
+extern int  segatex_open(void);
+extern void segatex_close(int fd);
+extern int  segatex_get_reply(int fd, struct segatex_reply *rep, reply_t block, 
 		int peek);
-extern uid_t audit_getloginuid(void);
-extern int  audit_setloginuid(uid_t uid);
-extern uint32_t audit_get_session(void);
-extern int  audit_detect_machine(void);
-extern int audit_determine_machine(const char *arch);
+extern uid_t segatex_getloginuid(void);
+extern int  segatex_setloginuid(uid_t uid);
+extern uint32_t segatex_get_session(void);
+extern int  segatex_detect_machine(void);
+extern int segatex_determine_machine(const char *arch);
 
 /* Translation functions */
-extern int        audit_name_to_field(const char *field);
-extern const char *audit_field_to_name(int field);
-extern int        audit_name_to_syscall(const char *sc, int machine);
-extern const char *audit_syscall_to_name(int sc, int machine);
-extern int        audit_name_to_flag(const char *flag);
-extern const char *audit_flag_to_name(int flag);
-extern int        audit_name_to_action(const char *action);
-extern const char *audit_action_to_name(int action);
-extern int        audit_name_to_msg_type(const char *msg_type);
-extern const char *audit_msg_type_to_name(int msg_type);
-extern int        audit_name_to_machine(const char *machine);
-extern const char *audit_machine_to_name(int machine);
-extern unsigned int audit_machine_to_elf(int machine);
-extern int          audit_elf_to_machine(unsigned int elf);
-extern const char *audit_operator_to_symbol(int op);
-extern int        audit_name_to_errno(const char *error);
-extern const char *audit_errno_to_name(int error);
-extern int        audit_name_to_ftype(const char *name);
-extern const char *audit_ftype_to_name(int ftype); 
-extern void audit_number_to_errmsg(int errnumber, const char *opt);
+extern int        segatex_name_to_field(const char *field);
+extern const char *segatex_field_to_name(int field);
+extern int        segatex_name_to_syscall(const char *sc, int machine);
+extern const char *segatex_syscall_to_name(int sc, int machine);
+extern int        segatex_name_to_flag(const char *flag);
+extern const char *segatex_flag_to_name(int flag);
+extern int        segatex_name_to_action(const char *action);
+extern const char *segatex_action_to_name(int action);
+extern int        segatex_name_to_msg_type(const char *msg_type);
+extern const char *segatex_msg_type_to_name(int msg_type);
+extern int        segatex_name_to_machine(const char *machine);
+extern const char *segatex_machine_to_name(int machine);
+extern unsigned int segatex_machine_to_elf(int machine);
+extern int          segatex_elf_to_machine(unsigned int elf);
+extern const char *segatex_operator_to_symbol(int op);
+extern int        segatex_name_to_errno(const char *error);
+extern const char *segatex_errno_to_name(int error);
+extern int        segatex_name_to_ftype(const char *name);
+extern const char *segatex_ftype_to_name(int ftype); 
+extern void segatex_number_to_errmsg(int errnumber, const char *opt);
 
-/* AUDIT_GET */
-extern int audit_request_status(int fd);
-extern int audit_is_enabled(int fd);
-extern int get_auditfail_action(auditfail_t *failmode);
-extern int audit_request_features(int fd);
-extern uint32_t audit_get_features(void);
+/* SEGATEX_GET */
+extern int segatex_request_status(int fd);
+extern int segatex_is_enabled(int fd);
+extern int get_segatexfail_action(segatexfail_t *failmode);
+extern int segatex_request_features(int fd);
+extern uint32_t segatex_get_features(void);
 
-/* AUDIT_SET */
+/* SEGATEX_SET */
 typedef enum { WAIT_NO, WAIT_YES } rep_wait_t;
-extern int  audit_set_pid(int fd, uint32_t pid, rep_wait_t wmode);
-extern int  audit_set_enabled(int fd, uint32_t enabled);
-extern int  audit_set_failure(int fd, uint32_t failure);
-extern int  audit_set_rate_limit(int fd, uint32_t limit);
-extern int  audit_set_backlog_limit(int fd, uint32_t limit);
-int audit_set_backlog_wait_time(int fd, uint32_t bwt);
-int audit_reset_lost(int fd);
-extern int  audit_set_feature(int fd, unsigned feature, unsigned value, unsigned lock);
-extern int  audit_set_loginuid_immutable(int fd);
+extern int  segatex_set_pid(int fd, uint32_t pid, rep_wait_t wmode);
+extern int  segatex_set_enabled(int fd, uint32_t enabled);
+extern int  segatex_set_failure(int fd, uint32_t failure);
+extern int  segatex_set_rate_limit(int fd, uint32_t limit);
+extern int  segatex_set_backlog_limit(int fd, uint32_t limit);
+int segatex_set_backlog_wait_time(int fd, uint32_t bwt);
+int segatex_reset_lost(int fd);
+extern int  segatex_set_feature(int fd, unsigned feature, unsigned value, unsigned lock);
+extern int  segatex_set_loginuid_immutable(int fd);
 
-/* AUDIT_LIST_RULES */
-extern int  audit_request_rules_list_data(int fd);
+/* SEGATEX_LIST_RULES */
+extern int  segatex_request_rules_list_data(int fd);
 
 /* SIGNAL_INFO */
-extern int audit_request_signal_info(int fd);
+extern int segatex_request_signal_info(int fd);
 
-/* AUDIT_WATCH */
-extern int audit_update_watch_perms(struct audit_rule_data *rule, int perms);
-extern int audit_add_watch(struct audit_rule_data **rulep, const char *path);
-extern int audit_add_dir(struct audit_rule_data **rulep, const char *path);
-extern int audit_add_watch_dir(int type, struct audit_rule_data **rulep,
+/* SEGATEX_WATCH */
+extern int segatex_update_watch_perms(struct segatex_rule_data *rule, int perms);
+extern int segatex_add_watch(struct segatex_rule_data **rulep, const char *path);
+extern int segatex_add_dir(struct segatex_rule_data **rulep, const char *path);
+extern int segatex_add_watch_dir(int type, struct segatex_rule_data **rulep,
 				const char *path);
-extern int audit_trim_subtrees(int fd);
-extern int audit_make_equivalent(int fd, const char *mount_point,
+extern int segatex_trim_subtrees(int fd);
+extern int segatex_make_equivalent(int fd, const char *mount_point,
 				const char *subtree);
 
-/* AUDIT_ADD_RULE */
-extern int  audit_add_rule_data(int fd, struct audit_rule_data *rule,
+/* SEGATEX_ADD_RULE */
+extern int  segatex_add_rule_data(int fd, struct segatex_rule_data *rule,
                                 int flags, int action);
 
-/* AUDIT_DEL_RULE */
-extern int  audit_delete_rule_data(int fd, struct audit_rule_data *rule,
+/* SEGATEX_DEL_RULE */
+extern int  segatex_delete_rule_data(int fd, struct segatex_rule_data *rule,
                                    int flags, int action);
 
 /* The following are for standard formatting of messages */
-extern int audit_value_needs_encoding(const char *str, unsigned int len);
-extern char *audit_encode_value(char *final,const char *buf,unsigned int size);
-extern char *audit_encode_nv_string(const char *name, const char *value,
+extern int segatex_value_needs_encoding(const char *str, unsigned int len);
+extern char *segatex_encode_value(char *final,const char *buf,unsigned int size);
+extern char *segatex_encode_nv_string(const char *name, const char *value,
 	unsigned int vlen);
-extern int audit_log_user_message(int audit_fd, int type, const char *message,
+extern int segatex_log_user_message(int segatex_fd, int type, const char *message,
         const char *hostname, const char *addr, const char *tty, int result);
-extern int audit_log_user_comm_message(int audit_fd, int type,
+extern int segatex_log_user_comm_message(int segatex_fd, int type,
 	const char *message, const char *comm, const char *hostname,
 	const char *addr, const char *tty, int result);
-extern int audit_log_acct_message(int audit_fd, int type, const char *pgname,
+extern int segatex_log_acct_message(int segatex_fd, int type, const char *pgname,
         const char *op, const char *name, unsigned int id,
         const char *host, const char *addr, const char *tty, int result);
-extern int audit_log_user_avc_message(int audit_fd, int type, 
+extern int segatex_log_user_avc_message(int segatex_fd, int type, 
 	const char *message, const char *hostname, const char *addr, 
 	const char *tty, uid_t uid);
-extern int audit_log_semanage_message(int audit_fd, int type,
+extern int segatex_log_semanage_message(int segatex_fd, int type,
 	const char *pgname, const char *op, const char *name, unsigned int id,
         const char *new_seuser, const char *new_role, const char *new_range,
 	const char *old_seuser, const char *old_role, const char *old_range,
 	const char *host, const char *addr,
         const char *tty, int result);
-extern int audit_log_user_command(int audit_fd, int type, const char *command,
+extern int segatex_log_user_command(int segatex_fd, int type, const char *command,
         const char *tty, int result);
 
 /* Rule-building helper functions */
-extern int  audit_rule_syscall_data(struct audit_rule_data *rule, int scall);
-extern int  audit_rule_syscallbyname_data(struct audit_rule_data *rule,
+extern int  segatex_rule_syscall_data(struct segatex_rule_data *rule, int scall);
+extern int  segatex_rule_syscallbyname_data(struct segatex_rule_data *rule,
                                           const char *scall);
-/* Note that the following function takes a **, where audit_rule_fieldpair()
+/* Note that the following function takes a **, where segatex_rule_fieldpair()
  * takes just a *.  That structure may need to be reallocated as a result of
  * adding new fields */
-extern int  audit_rule_fieldpair_data(struct audit_rule_data **rulep,
+extern int  segatex_rule_fieldpair_data(struct segatex_rule_data **rulep,
                                       const char *pair, int flags);
-extern int audit_rule_interfield_comp_data(struct audit_rule_data **rulep,
+extern int segatex_rule_interfield_comp_data(struct segatex_rule_data **rulep,
 					 const char *pair, int flags);
-extern void audit_rule_free_data(struct audit_rule_data *rule);
+extern void segatex_rule_free_data(struct segatex_rule_data *rule);
 
 /* Capability testing functions */
-int audit_can_control(void);
-int audit_can_write(void);
-int audit_can_read(void);
+int segatex_can_control(void);
+int segatex_can_write(void);
+int segatex_can_read(void);
 
 #ifdef __cplusplus
 }
