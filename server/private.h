@@ -1,5 +1,9 @@
 /* private.h -- 
+ *  This file contains the contents of segatex-ng.
+ *
  * Copyright 2005,2006,2009,2013-14 Red Hat Inc., Durham, North Carolina.
+ * Copyright(C) Shintaro Fujiwara
+ *
  * All Rights Reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -33,7 +37,7 @@ typedef enum { REAL_ERR, HIDE_IT } hide_t;
 
 /* This structure is for protocol reference only.  All fields are
    packed and in network order (LSB first).  */
-struct auditd_remote_message_wrapper {
+struct segatexd_remote_message_wrapper {
 	/* The magic number shall never have LF (0x0a) as one of its bytes.  */
 	uint32_t	magic;
 	/* Bumped when the layout of this structure changes.  */
@@ -43,74 +47,74 @@ struct auditd_remote_message_wrapper {
 	uint8_t		message_version;
 	/* Upper 8 bits are generic type, see below.  */
 	uint32_t	type;
-	/* Number of bytes that follow this header  Must be 0..MAX_AUDIT_MESSAGE_LENGTH.  */
+	/* Number of bytes that follow this header  Must be 0..MAX_SEGATEX_MESSAGE_LENGTH.  */
 	uint16_t	length;
 	/* Copied from message to its reply. */
 	uint32_t	sequence_id;
 	/* The message follows for LENGTH bytes.  */
 };
 
-#define AUDIT_RMW_HEADER_SIZE		16
+#define SEGATEX_RMW_HEADER_SIZE		16
 /* The magic number shall never have LF (0x0a) as one of its bytes.  */
-#define AUDIT_RMW_MAGIC			0xff0000feUL
+#define SEGATEX_RMW_MAGIC			0xff0000feUL
 
-#define AUDIT_RMW_HEADER_VERSION	0
+#define SEGATEX_RMW_HEADER_VERSION	0
 
 /* If set, this is a reply.  */
-#define AUDIT_RMW_TYPE_REPLYMASK	0x40000000
+#define SEGATEX_RMW_TYPE_REPLYMASK	0x40000000
 /* If set, this reply indicates a fatal error of some sort.  */
-#define AUDIT_RMW_TYPE_FATALMASK	0x20000000
+#define SEGATEX_RMW_TYPE_FATALMASK	0x20000000
 /* If set, this reply indicates success but with some warnings.  */
-#define AUDIT_RMW_TYPE_WARNMASK		0x10000000
+#define SEGATEX_RMW_TYPE_WARNMASK		0x10000000
 /* This part of the message type is the details for the above.  */
-#define AUDIT_RMW_TYPE_DETAILMASK	0x0fffffff
+#define SEGATEX_RMW_TYPE_DETAILMASK	0x0fffffff
 
 /* Version 0 messages.  */
-#define AUDIT_RMW_TYPE_MESSAGE		0x00000000
-#define AUDIT_RMW_TYPE_HEARTBEAT	0x00000001
-#define AUDIT_RMW_TYPE_ACK		0x40000000
-#define AUDIT_RMW_TYPE_ENDING		0x40000001
-#define AUDIT_RMW_TYPE_DISKLOW		0x50000001
-#define AUDIT_RMW_TYPE_DISKFULL		0x60000001
-#define AUDIT_RMW_TYPE_DISKERROR	0x60000002
+#define SEGATEX_RMW_TYPE_MESSAGE		0x00000000
+#define SEGATEX_RMW_TYPE_HEARTBEAT	0x00000001
+#define SEGATEX_RMW_TYPE_ACK		0x40000000
+#define SEGATEX_RMW_TYPE_ENDING		0x40000001
+#define SEGATEX_RMW_TYPE_DISKLOW		0x50000001
+#define SEGATEX_RMW_TYPE_DISKFULL		0x60000001
+#define SEGATEX_RMW_TYPE_DISKERROR	0x60000002
 
 /* These next four should not be called directly.  */
-#define _AUDIT_RMW_PUTN32(header,i,v)	\
+#define _SEGATEX_RMW_PUTN32(header,i,v)	\
 	header[i] = v & 0xff;		\
 	header[i+1] = (v>>8) & 0xff;	\
 	header[i+2] = (v>>16) & 0xff;	\
 	header[i+3] = (v>>24) & 0xff;
-#define _AUDIT_RMW_PUTN16(header,i,v)			\
+#define _SEGATEX_RMW_PUTN16(header,i,v)			\
 	header[i] = v & 0xff;		\
 	header[i+1] = (v>>8) & 0xff;
-#define _AUDIT_RMW_GETN32(header,i)			\
+#define _SEGATEX_RMW_GETN32(header,i)			\
 	(((uint32_t)(header[i] & 0xFF)) |               \
 	 (((uint32_t)(header[i+1] & 0xFF))<<8) |        \
 	 (((uint32_t)(header[i+2] & 0xFF ))<<16) |      \
 	 (((uint32_t)(header[i+3] & 0xFF))<<24))
-#define _AUDIT_RMW_GETN16(header,i)			\
+#define _SEGATEX_RMW_GETN16(header,i)			\
 	((uint32_t)(header[i] & 0xFF) | ((uint32_t)(header[i+1] & 0xFF)<<8))
 
 /* For these, HEADER must by of type "unsigned char *" or "unsigned
    char []" */
 
-#define AUDIT_RMW_PACK_HEADER(header,mver,type,len,seq) \
-	_AUDIT_RMW_PUTN32 (header,0, AUDIT_RMW_MAGIC); \
-	header[4] = AUDIT_RMW_HEADER_VERSION;  \
+#define SEGATEX_RMW_PACK_HEADER(header,mver,type,len,seq) \
+	_SEGATEX_RMW_PUTN32 (header,0, SEGATEX_RMW_MAGIC); \
+	header[4] = SEGATEX_RMW_HEADER_VERSION;  \
 	header[5] = mver;  \
-	_AUDIT_RMW_PUTN32 (header,6, type);  \
-	_AUDIT_RMW_PUTN16 (header,10, len); \
-	_AUDIT_RMW_PUTN32 (header,12, seq);
+	_SEGATEX_RMW_PUTN32 (header,6, type);  \
+	_SEGATEX_RMW_PUTN16 (header,10, len); \
+	_SEGATEX_RMW_PUTN32 (header,12, seq);
 
-#define AUDIT_RMW_IS_MAGIC(header,length)		\
-	(length >= 4 && _AUDIT_RMW_GETN32 (header,0) == AUDIT_RMW_MAGIC)
+#define SEGATEX_RMW_IS_MAGIC(header,length)		\
+	(length >= 4 && _SEGATEX_RMW_GETN32 (header,0) == SEGATEX_RMW_MAGIC)
 
-#define AUDIT_RMW_UNPACK_HEADER(header,hver,mver,type,len,seq) \
+#define SEGATEX_RMW_UNPACK_HEADER(header,hver,mver,type,len,seq) \
 	hver = header[4]; \
 	mver = header[5]; \
-	type = _AUDIT_RMW_GETN32 (header,6); \
-	len = _AUDIT_RMW_GETN16 (header,10); \
-	seq = _AUDIT_RMW_GETN32 (header,12);
+	type = _SEGATEX_RMW_GETN32 (header,6); \
+	len = _SEGATEX_RMW_GETN16 (header,10); \
+	seq = _SEGATEX_RMW_GETN32 (header,12);
 
 /* General */
 /* Internal syslog messaging */
@@ -121,26 +125,26 @@ void segatex_msg(int priority, const char *fmt, ...)
 	;
 #endif
 
-extern int audit_send(int fd, int type, const void *data, unsigned int size);
+extern int segatex_send(int fd, int type, const void *data, unsigned int size);
 
-AUDIT_HIDDEN_START
+SEGATEX_HIDDEN_START
 
 // This is the main messaging function used internally
-extern int audit_send_user_message(int fd, int type, hide_t hide_err, 
+extern int segatex_send_user_message(int fd, int type, hide_t hide_err, 
 	const char *message);
 
-AUDIT_HIDDEN_END
+SEGATEX_HIDDEN_END
 
 // strsplit.c
-char *audit_strsplit_r(char *s, char **savedpp);
-char *audit_strsplit(char *s);
+char *segatex_strsplit_r(char *s, char **savedpp);
+char *segatex_strsplit(char *s);
 
-// libaudit.c
-extern int _audit_permadded;
-extern int _audit_archadded;
-extern int _audit_syscalladded;
-extern int _audit_exeadded;
-extern unsigned int _audit_elf;
+// libsegatex.c
+extern int _segatex_permadded;
+extern int _segatex_archadded;
+extern int _segatex_syscalladded;
+extern int _segatex_exeadded;
+extern unsigned int _segatex_elf;
 
 #ifdef __cplusplus
 }
