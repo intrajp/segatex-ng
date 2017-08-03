@@ -41,13 +41,14 @@ void print_help(void)
 {
     printf("\n Usage: %s [OPTIONS]\n\n", app_name);
     printf("  Options:\n");
+    //printf("   -p --pid_file  filename   PID file used by daemonized app\n");
+    printf("   -t --test_conf filename   Test configuration file\n");
     printf("   -r --reload               Reload the configuration file\n");
+    printf("   -s --stop                 Stop segatexd daemon program\n");
     printf("   -d --daemon               Daemonize this application\n");
     printf("   -h --help                 Print this help\n");
     //printf("   -c --conf_file filename   Read configuration from the file\n");
-    printf("   -t --test_conf filename   Test configuration file\n");
     //printf("   -l --log_file  filename   Write logs to the file\n");
-    printf("   -p --pid_file  filename   PID file used by daemonized app\n");
     printf("\n");
 }
 
@@ -60,11 +61,12 @@ int main(int argc, char *argv[])
     set_sgmessage_mode(MSG_SYSLOG, DBG_NO); 
 
     static struct option long_options[] = {
+        //{"pid_file", required_argument, 0, 'p'},
         {"test_conf", required_argument, 0, 't'},
         {"reload", no_argument, 0, 'r'},
+        {"stop", no_argument, 0, 's'},
         {"daemon", no_argument, 0, 'd'},
         {"help", no_argument, 0, 'h'},
-        {"pid_file", required_argument, 0, 'p'},
         {NULL, 0, 0, 0}
     };
 
@@ -72,34 +74,46 @@ int main(int argc, char *argv[])
     char *log_file_name = NULL;
     int start_daemonized = 0;
     int duplicate_value = 0;
+    int LEN = 4096;
+    char line[LEN];
 
     /* Try to process all command line arguments */
-    while ((value = getopt_long(argc, argv, "ptdrh::", long_options, &option_index)) != -1) {
+    while ((value = getopt_long(argc, argv, "trsdh::", long_options, &option_index)) != -1) {
         switch (value) {
-            case 'p':
-                pid_file_name = strdup(optarg);
-                break;
+        //   case 'p':
+        //        pid_file_name = strdup(optarg);
+        //        break;
             case 't':
                 cfg_init(fname);
-                break;
-            case 'd':
-                //printf("duplicate_value:%d\n",duplicate_value);
-                if ( duplicate_value == 1 ){
-                    printf("-r and -d could not be selected at the same time\n");
-                    return EXIT_FAILURE; 
-                }
-                duplicate_value = 1;
-                start_daemonized = 1;
                 break;
             case 'r':
                 //printf("duplicate_value:%d\n",duplicate_value);
                 if ( duplicate_value == 1 ){
-                    printf("-r and -d could not be selected at the same time\n");
+                    printf("-r, -s and -d could not be selected at the same time\n");
                     return EXIT_FAILURE; 
                 }
                 duplicate_value = 1;
                 cfg_init(fname);
                 handle_signal(SIGHUP);
+                break;
+            case 's':
+                if ( duplicate_value == 1 ){
+                    printf("-r, -s and -d could not be selected at the same time\n");
+                    return EXIT_FAILURE; 
+                }
+                duplicate_value = 1;
+                running =3;
+                log_stream = stdout;
+                kill(read_pid(),SIGINT);
+                break;
+            case 'd':
+                //printf("duplicate_value:%d\n",duplicate_value);
+                if ( duplicate_value == 1 ){
+                    printf("-r, -s and -d could not be selected at the same time\n");
+                    return EXIT_FAILURE; 
+                }
+                duplicate_value = 1;
+                start_daemonized = 1;
                 break;
             case 'h':
                 print_help();
@@ -114,6 +128,10 @@ int main(int argc, char *argv[])
 
     int SIG_VALUE;
     printf("SIG_VALUE is %d\n",SIG_VALUE);
+
+    /* Daemon will handle two signals */
+    signal(SIGINT, handle_signal);
+    signal(SIGHUP, handle_signal);
 
     int i;
     int i2;
@@ -132,41 +150,40 @@ int main(int argc, char *argv[])
     else if (i2 = -1)
         printf("Audit got error.\n");
 
-    /* Initialize the conf file reading procedure. */
-    cfg_init(fname);
+    /* SIGINT should have running as 3*/
+    if (running != 3)
+    {
+        /* Initialize the conf file reading procedure. */
+        cfg_init(fname);
 
-    /* When daemonizing is requested at command line. */
-    if (start_daemonized == 1) {
-        /* It is also possible to use glibc function deamon()
-         * at this point, but it is useful to customize your daemon. */
-        daemonize();
-    }
+        /* When daemonizing is requested at command line. */
+        if (start_daemonized == 1) {
+            /* It is also possible to use glibc function deamon()
+             * at this point, but it is useful to customize your daemon. */
+            daemonize();
+        }
 
-    /* Open system log and write message to it */
-    openlog(argv[0], LOG_PID|LOG_CONS, LOG_DAEMON);
-    segatex_msg(LOG_INFO, "Started %s", app_name);
+        /* Open system log and write message to it */
+        openlog(argv[0], LOG_PID|LOG_CONS, LOG_DAEMON);
+        segatex_msg(LOG_INFO, "Started %s", app_name);
 
-    /* Daemon will handle two signals */
-    signal(SIGINT, handle_signal);
-    signal(SIGHUP, handle_signal);
-
-    /* Try to open log file to this daemon */
-    if (log_file_name != NULL) {
-        log_stream = fopen(log_file_name, "a+");
-        if (log_stream == NULL) {
-            segatex_msg(LOG_ERR, "Can not open log file: %s, error: %s",
-                log_file_name, strerror(errno));
+        /* Try to open log file to this daemon */
+        if (log_file_name != NULL) {
+            log_stream = fopen(log_file_name, "a+");
+            if (log_stream == NULL) {
+                segatex_msg(LOG_ERR, "Can not open log file: %s, error: %s",
+                    log_file_name, strerror(errno));
+                log_stream = stdout;
+            }
+        } else {
             log_stream = stdout;
         }
-    } else {
-        log_stream = stdout;
+
+        /* This global variable can be changed in function handling signal */
+        running = 1;
     }
 
-    /* This global variable can be changed in function handling signal */
-    running = 1;
-
     /* Never ending loop of server */
-
     while (running == 1) {
         /* Debug print */
         ret = fprintf(log_stream, "Debug: %d\n", counter++);
@@ -187,6 +204,9 @@ int main(int argc, char *argv[])
          * asynchronous event. Note: sleep() is interrupted, when
          * signal is received. */
         segatex_msg(LOG_INFO, "this is segatexd-server");
+        //for debug
+        //segatex_msg(LOG_INFO, "PID of segatexd is %d",read_pid());
+        //for debug
         sleep(delay);
     }
 
@@ -199,8 +219,9 @@ int main(int argc, char *argv[])
     segatex_msg(LOG_INFO, "Stopped %s", app_name);
     closelog();
 
-    /* Free allocated memory */
-    if (pid_file_name != NULL) free(pid_file_name);
+    /* unlink pid file */
+    if (pid_file_name != NULL)
+        unlink(pid_file_name);
 
     return EXIT_SUCCESS;
 }

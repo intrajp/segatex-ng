@@ -308,6 +308,8 @@ void cfg_init(const char *fname)
     }
     /* allocate the memory (this memory is not freed anywhere) */
     segatexd_cfg=(struct segatex_ng_config *)malloc(sizeof(struct segatex_ng_config));
+    //for debug
+    //free(segatexd_cfg);
     if (segatexd_cfg==NULL)
     {
         segatex_msg(LOG_CRIT,"malloc() failed to allocate memory");
@@ -318,5 +320,5 @@ void cfg_init(const char *fname)
     cfg_defaults(segatexd_cfg);
     /* read configfile */
     cfg_read(fname,segatexd_cfg);
-    //printf("segatexd_cfg:%p\n",segatexd_cfg);
+    printf("segatexd_cfg:%p\n",segatexd_cfg);
 }
