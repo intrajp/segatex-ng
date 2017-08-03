@@ -63,9 +63,9 @@ static char *pid_file_name = "/var/run/segatexd/segatexd.pid";
 static int pid_fd = -1;
 static char *app_name = "segatexd";
 static FILE *log_stream;
-const char msg_sigint[] ="segatexd caught SIGINT !\n";
-const char msg_sighup[] ="segatexd caught SIGHUP !\n";
-const char msg_sigchld[] ="segatexd caught SIGCHLD !\n";
+const char msg_sigint[] ="segatexd caught SIGINT\n";
+const char msg_sighup[] ="segatexd caught SIGHUP\n";
+const char msg_sigchld[] ="segatexd caught SIGCHLD\n";
 int SIG_VALUE;
 
 /* brief This function will daemonize this app */
@@ -155,6 +155,31 @@ static void daemonize()
     syslog(LOG_INFO, "segatexd daemonize process succeeded");
 }
 
+/* read pid_file_name and return pid of segatexd.
+ */
+pid_t read_pid()
+{
+    pid_t pid = 0;
+    FILE *fp;
+    char linebuf[MAX_LINE_LENGTH];
+    char *line;
+
+    /* open config file */
+    if ((fp=fopen(pid_file_name,"r"))==NULL)
+    {
+        segatex_msg(LOG_ERR,"cannot open config file (%s): %s",pid_file_name,strerror(errno));
+        exit(EXIT_FAILURE);
+    } else
+    /* read file and parse lines */
+    while (fgets(linebuf,sizeof(linebuf),fp)!=NULL)
+    {
+        line=linebuf;
+        //segatex_msg(LOG_INFO,"line:%s",line);
+    }
+    pid = atoi(line);
+    return pid;
+}
+
 /* brief Callback function for handling signals.
  * param	sig	identifier of signal
  */
@@ -163,23 +188,17 @@ void handle_signal(int sig)
     if (sig == SIGINT) {
         /*showing this is SIGINT process*/
         write(STDOUT_FILENO, msg_sigint, sizeof(msg_sigint)-1);
-        /* Unlock and close lockfile */
-        if (pid_fd != -1) {
-            lockf(pid_fd, F_ULOCK, 0);
-            close(pid_fd);
-        }
-        /* Try to delete lockfile */
-        if (pid_file_name != NULL) {
-            unlink(pid_file_name);
-        }
-        running = 0;
+        segatex_msg(LOG_INFO,"%s",msg_sigint);
+        running = 3;
+        log_stream = stdout;
         /* Reset signal handling to default behavior */
         signal(SIGINT, SIG_DFL);
     } else if (sig == SIGHUP) {
+        /*showing this is SIGHUP process*/
+        write(STDOUT_FILENO, msg_sighup, sizeof(msg_sighup)-1);
+        segatex_msg(LOG_INFO,"%s",msg_sighup);
         /*set global int value to 2*/
         SIG_VALUE = 2;
-        /*showing this is SIGHUP process*/
-        //write(STDOUT_FILENO, msg_sighup, sizeof(msg_sighup)-1);
         /* clear configuration */
         cfg_defaults(segatexd_cfg);
         /* read configfile */
@@ -193,4 +212,3 @@ void handle_signal(int sig)
         write(STDOUT_FILENO, msg_sigchld, sizeof(msg_sigchld)-1);
     }
 }
-

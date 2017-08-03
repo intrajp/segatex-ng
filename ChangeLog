@@ -1,3 +1,5 @@
+2017-08-04 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
+    Fixed properly handle SIGINT  
 2017-08-02 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
     Code cleaning 
 2017-08-01 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
