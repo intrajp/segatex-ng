@@ -1,3 +1,5 @@
+2017-08-05 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
+    Added avoid_oom_killer function 
 2017-08-04 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
     Fixed properly handle SIGINT  
 2017-08-02 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>

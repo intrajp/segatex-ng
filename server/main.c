@@ -37,6 +37,7 @@
 #include "daemonize.c"
 
 /* brief Print help for this application */
+
 void print_help(void)
 {
     printf("\n Usage: %s [OPTIONS]\n\n", app_name);
@@ -52,7 +53,37 @@ void print_help(void)
     printf("\n");
 }
 
+/*avoid oom killer */
+
+static void avoid_oom_killer(void)
+{
+    int oomfd, len, rc;
+    char *score = NULL;
+
+    /* New kernels use different technique */	
+    if ((oomfd = open("/proc/self/oom_score_adj",
+                O_NOFOLLOW | O_WRONLY)) >= 0) {
+        score = "-1000";
+    } else if ((oomfd = open("/proc/self/oom_adj",
+                O_NOFOLLOW | O_WRONLY)) >= 0) {
+        score = "-17";
+    } else {
+        segatex_msg(LOG_NOTICE, "Cannot open out of memory adjuster");
+        return;
+    }
+
+    len = strlen(score);
+    rc = write(oomfd, score, len);
+    //segatex_msg(LOG_INFO,"len:%d",len);
+    //segatex_msg(LOG_INFO,"rc:%d",rc);
+    if (rc != len)
+        segatex_msg(LOG_NOTICE, "Unable to adjust out of memory score");
+
+    close(oomfd);
+}
+
 /* Main function */
+
 int main(int argc, char *argv[])
 {
     //app_name = argv[0];
@@ -125,6 +156,9 @@ int main(int argc, char *argv[])
                 break;
         }
     }
+
+    /* Tell kernel not to kill us */
+    avoid_oom_killer();
 
     int SIG_VALUE;
     printf("SIG_VALUE is %d\n",SIG_VALUE);
