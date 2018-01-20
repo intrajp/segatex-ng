@@ -173,10 +173,10 @@ static void get_eol ( const char *filename, int lnr,
 void cfg_read ( const char *filename, struct segatex_ng_config *cfg )
 {
     char line_break [ ]= "\n" ;
-    char struct_str [ 4096 ] = "";
+    char struct_str [ MAX_LINE_LENGTH ] = "";
     char struct_pre [ ] = "cfg->threads is ";
     char threads_str [ 24 ];
-    char filename_str [ 4096 ];
+    char filename_str [ MAX_LINE_LENGTH ];
     char filename_pre [ ] = "file name is ";
 
     strcpy ( filename_str, filename_pre );
