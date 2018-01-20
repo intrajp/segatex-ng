@@ -108,9 +108,9 @@ static void daemonize ( )
     };
     /* Change the working directory to the root directory */
     /* or another appropriated directory */
-    char buf_cwd [ 4096 ];
-    char buf_cwd2 [ 4096 ];
-    char buf_cwd3 [ 4096 ];
+    char buf_cwd [ MAX_LINE_LENGTH ];
+    char buf_cwd2 [ MAX_LINE_LENGTH ];
+    char buf_cwd3 [ MAX_LINE_LENGTH ];
     getcwd ( buf_cwd, sizeof ( buf_cwd ) );
     //printf("Now the Current directory is %s\n",buf_cwd);
     chdir ( "/" );

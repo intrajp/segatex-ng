@@ -1,23 +1,23 @@
 /*
-   main.c - main file for segatex-ng.
-   This file contains the contents of segatex-ng.
-
-   Copyright (C) 2017-2018 Shintaro Fujiwara
-
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   This library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
-
-   You should have received a copy of the GNU Lesser General Public
-   License along with this library; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-   02110-1301 USA
+ *  main.c - main file for segatex-ng.
+ *  This file contains the contents of segatex-ng.
+ *
+ *  Copyright (C) 2017-2018 Shintaro Fujiwara
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ *  02110-1301 USA
 */
 
 #include <stdio.h>
@@ -104,8 +104,7 @@ int main ( int argc, char *argv [ ] )
     char *log_file_name = NULL;
     int start_daemonized = 0;
     int duplicate_value = 0;
-    int LEN = 4096;
-    char line [ LEN ];
+    char line [ MAX_LINE_LENGTH ];
 
     /* Try to process all command line arguments */
     while ( ( value = getopt_long(argc, argv, "trsdh::", long_options, &option_index ) ) != - 1 ) {

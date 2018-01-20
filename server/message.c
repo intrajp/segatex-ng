@@ -1,27 +1,27 @@
 /* message.c --
-   This file contains the contents of segatex-ng.
-
-  Copyright 2004,2005,2016 Red Hat Inc., Durham, North Carolina.
-  Copyright (C) 2017-2018 Shintaro Fujiwara
-  All Rights Reserved.
- 
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
- 
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
- 
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
-  Authors:
-       Steve Grubb <sgrubb@redhat.com>
-       Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
+ *   This file contains the contents of segatex-ng.
+ *
+ *  Copyright 2004,2005,2016 Red Hat Inc., Durham, North Carolina.
+ *  Copyright (C) 2017-2018 Shintaro Fujiwara
+ *  All Rights Reserved.
+ * 
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ * 
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ *  Authors:
+ *       Steve Grubb <sgrubb@redhat.com>
+ *       Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
 */
 
 #include <stdio.h>
@@ -30,7 +30,8 @@
 #include "private.h"
 
 /* The message mode refers to where informational messages go
-   0 - stderr, 1 - syslog, 2 - quiet. The default is quiet. */
+ *  0 - stderr, 1 - syslog, 2 - quiet. The default is quiet.
+*/
 static message_t message_mode = MSG_QUIET;
 static debug_message_t debug_message = DBG_NO;
 
