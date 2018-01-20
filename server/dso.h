@@ -2,7 +2,7 @@
    This file contains the contents of segatex-ng.
  
   Copyright 2005,2006,2009 Red Hat Inc., Durham, North Carolina.
-  Copyright (C) 2017 Shintaro Fujiwara
+  Copyright (C) 2017-2018 Shintaro Fujiwara
   All Rights Reserved.
  
   This library is free software; you can redistribute it and/or
@@ -31,14 +31,14 @@
  * This is to mark functions as internal to the API
  */
 #ifndef SEGATEX_HIDDEN_START
-#define SEGATEX_HIDDEN_START _Pragma("GCC visibility push(hidden)")
+#define SEGATEX_HIDDEN_START _Pragma ( "GCC visibility push ( hidden )" )
 #endif
 
 /*
  * This ends the section that is internal to the API.
  */
 #ifndef SEGATEX_HIDDEN_END
-#define SEGATEX_HIDDEN_END _Pragma("GCC visibility pop")
+#define SEGATEX_HIDDEN_END _Pragma ( "GCC visibility pop" )
 #endif
 
 #endif

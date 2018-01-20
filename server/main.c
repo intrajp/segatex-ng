@@ -2,7 +2,7 @@
    main.c - main file for segatex-ng.
    This file contains the contents of segatex-ng.
 
-   Copyright (C) 2017 Shintaro Fujiwara
+   Copyright (C) 2017-2018 Shintaro Fujiwara
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -38,7 +38,7 @@
 
 /* brief Print help for this application */
 
-void print_help(void)
+void print_help ( void )
 {
     printf("\n Usage: %s [OPTIONS]\n\n", app_name);
     printf("  Options:\n");
@@ -55,50 +55,49 @@ void print_help(void)
 
 /*avoid oom killer */
 
-static void avoid_oom_killer(void)
+static void avoid_oom_killer ( void )
 {
     int oomfd, len, rc;
     char *score = NULL;
 
     /* New kernels use different technique */	
-    if ((oomfd = open("/proc/self/oom_score_adj",
-                O_NOFOLLOW | O_WRONLY)) >= 0) {
+    if ( ( oomfd = open ( "/proc/self/oom_score_adj",
+                O_NOFOLLOW | O_WRONLY ) ) >= 0 ) {
         score = "-1000";
-    } else if ((oomfd = open("/proc/self/oom_adj",
-                O_NOFOLLOW | O_WRONLY)) >= 0) {
+    } else if ( ( oomfd = open("/proc/self/oom_adj",
+                O_NOFOLLOW | O_WRONLY ) ) >= 0) {
         score = "-17";
     } else {
-        segatex_msg(LOG_NOTICE, "Cannot open out of memory adjuster");
+        segatex_msg ( LOG_NOTICE, "Cannot open out of memory adjuster" );
         return;
     }
 
-    len = strlen(score);
-    rc = write(oomfd, score, len);
+    len = strlen ( score );
+    rc = write ( oomfd, score, len );
     //segatex_msg(LOG_INFO,"len:%d",len);
     //segatex_msg(LOG_INFO,"rc:%d",rc);
-    if (rc != len)
-        segatex_msg(LOG_NOTICE, "Unable to adjust out of memory score");
+    if ( rc != len )
+        segatex_msg ( LOG_NOTICE, "Unable to adjust out of memory score" );
 
-    close(oomfd);
+    close ( oomfd );
 }
 
 /* Main function */
 
-int main(int argc, char *argv[])
+int main ( int argc, char *argv [ ] )
 {
-    //app_name = argv[0];
     app_name = "segatexd";
     //setting message_mode
-    set_sgmessage_mode(MSG_SYSLOG, DBG_NO); 
+    set_sgmessage_mode ( MSG_SYSLOG, DBG_NO ); 
 
-    static struct option long_options[] = {
+    static struct option long_options [ ] = {
         //{"pid_file", required_argument, 0, 'p'},
-        {"test_conf", required_argument, 0, 't'},
-        {"reload", no_argument, 0, 'r'},
-        {"stop", no_argument, 0, 's'},
-        {"daemon", no_argument, 0, 'd'},
-        {"help", no_argument, 0, 'h'},
-        {NULL, 0, 0, 0}
+        { "test_conf", required_argument, 0, 't' },
+        { "reload",    no_argument,       0, 'r' },
+        { "stop",      no_argument,       0, 's' },
+        { "daemon",    no_argument,       0, 'd' },
+        { "help",      no_argument,       0, 'h' },
+        { NULL,        0,                 0,  0  }
     };
 
     int value, option_index = 0, ret;
@@ -106,26 +105,26 @@ int main(int argc, char *argv[])
     int start_daemonized = 0;
     int duplicate_value = 0;
     int LEN = 4096;
-    char line[LEN];
+    char line [ LEN ];
 
     /* Try to process all command line arguments */
-    while ((value = getopt_long(argc, argv, "trsdh::", long_options, &option_index)) != -1) {
-        switch (value) {
+    while ( ( value = getopt_long(argc, argv, "trsdh::", long_options, &option_index ) ) != - 1 ) {
+        switch ( value ) {
         //   case 'p':
         //        pid_file_name = strdup(optarg);
         //        break;
             case 't':
-                cfg_init(fname);
+                cfg_init ( fname );
                 break;
             case 'r':
                 //printf("duplicate_value:%d\n",duplicate_value);
-                if ( duplicate_value == 1 ){
+                if ( duplicate_value == 1 ) {
                     printf("-r, -s and -d could not be selected at the same time\n");
                     return EXIT_FAILURE; 
                 }
                 duplicate_value = 1;
-                cfg_init(fname);
-                handle_signal(SIGHUP);
+                cfg_init ( fname );
+                handle_signal ( SIGHUP );
                 break;
             case 's':
                 if ( duplicate_value == 1 ){
@@ -133,13 +132,13 @@ int main(int argc, char *argv[])
                     return EXIT_FAILURE; 
                 }
                 duplicate_value = 1;
-                running =3;
+                running = 3;
                 log_stream = stdout;
-                kill(read_pid(),SIGINT);
+                kill ( read_pid ( ), SIGINT );
                 break;
             case 'd':
                 //printf("duplicate_value:%d\n",duplicate_value);
-                if ( duplicate_value == 1 ){
+                if ( duplicate_value == 1 ) {
                     printf("-r, -s and -d could not be selected at the same time\n");
                     return EXIT_FAILURE; 
                 }
@@ -147,10 +146,10 @@ int main(int argc, char *argv[])
                 start_daemonized = 1;
                 break;
             case 'h':
-                print_help();
+                print_help ( );
                 return EXIT_SUCCESS;
                 case '?':
-                print_help();
+                print_help ( );
                 return EXIT_FAILURE;
             default:
                 break;
@@ -158,55 +157,56 @@ int main(int argc, char *argv[])
     }
 
     /* Tell kernel not to kill us */
-    avoid_oom_killer();
+    avoid_oom_killer ( );
 
     int SIG_VALUE;
     printf("SIG_VALUE is %d\n",SIG_VALUE);
 
     /* Daemon will handle two signals */
-    signal(SIGINT, handle_signal);
-    signal(SIGHUP, handle_signal);
+    signal ( SIGINT, handle_signal );
+    signal ( SIGHUP, handle_signal );
 
     int i;
     int i2;
     int fd2;
 
-    i = is_selinux_enabled();
-    i2 = audit_is_enabled(1);
-    if (i = 1)
+    i = is_selinux_enabled ( );
+    i2 = audit_is_enabled (1 );
+    if ( i = 1 )
         printf("SELinux is enabled.\n");
     else
         printf("SELinux is not enabled.\n");
-    if (i2 = 1)
+    if ( i2 = 1 )
         printf("Audit is enabled.\n");
-    else if (i2 = 0)
+    else if ( i2 = 0 )
         printf("Audit is not enabled.\n");
-    else if (i2 = -1)
+    else if ( i2 = -1 )
         printf("Audit got error.\n");
 
     /* SIGINT should have running as 3*/
-    if (running != 3)
+    if ( running != 3 )
     {
         /* Initialize the conf file reading procedure. */
-        cfg_init(fname);
+        cfg_init ( fname );
 
         /* When daemonizing is requested at command line. */
-        if (start_daemonized == 1) {
+        if ( start_daemonized == 1 ) {
             /* It is also possible to use glibc function deamon()
-             * at this point, but it is useful to customize your daemon. */
-            daemonize();
+             * at this point, but it is useful to customize your daemon.
+            */
+            daemonize ( );
         }
 
         /* Open system log and write message to it */
-        openlog(argv[0], LOG_PID|LOG_CONS, LOG_DAEMON);
-        segatex_msg(LOG_INFO, "Started %s", app_name);
+        openlog ( argv [ 0 ], LOG_PID | LOG_CONS, LOG_DAEMON );
+        segatex_msg ( LOG_INFO, "Started %s", app_name );
 
         /* Try to open log file to this daemon */
-        if (log_file_name != NULL) {
-            log_stream = fopen(log_file_name, "a+");
-            if (log_stream == NULL) {
-                segatex_msg(LOG_ERR, "Can not open log file: %s, error: %s",
-                    log_file_name, strerror(errno));
+        if ( log_file_name != NULL ) {
+            log_stream = fopen ( log_file_name, "a+" );
+            if ( log_stream == NULL ) {
+                segatex_msg ( LOG_ERR, "Can not open log file: %s, error: %s",
+                    log_file_name, strerror ( errno ) );
                 log_stream = stdout;
             }
         } else {
@@ -218,18 +218,18 @@ int main(int argc, char *argv[])
     }
 
     /* Never ending loop of server */
-    while (running == 1) {
+    while ( running == 1 ) {
         /* Debug print */
-        ret = fprintf(log_stream, "Debug: %d\n", counter++);
+        ret = fprintf ( log_stream, "Debug: %d\n", counter++ );
         if (ret < 0) {
-            segatex_msg(LOG_ERR, "Can not write to log stream: %s, error: %s",
-                (log_stream == stdout) ? "stdout" : log_file_name, strerror(errno));
+            segatex_msg ( LOG_ERR, "Can not write to log stream: %s, error: %s",
+                ( log_stream == stdout ) ? "stdout" : log_file_name, strerror ( errno ) );
             break;
         }
-        ret = fflush(log_stream);
-        if (ret != 0) {
-            segatex_msg(LOG_ERR, "Can not fflush() log stream: %s, error: %s",
-                (log_stream == stdout) ? "stdout" : log_file_name, strerror(errno));
+        ret = fflush ( log_stream );
+        if ( ret != 0 ) {
+            segatex_msg ( LOG_ERR, "Can not fflush() log stream: %s, error: %s",
+                ( log_stream == stdout ) ? "stdout" : log_file_name, strerror ( errno ) );
             break;
         }
         /* TODO: dome something useful here */
@@ -237,25 +237,25 @@ int main(int argc, char *argv[])
         /* Real server should use select() or poll() for waiting at
          * asynchronous event. Note: sleep() is interrupted, when
          * signal is received. */
-        segatex_msg(LOG_INFO, "this is segatexd-server");
+        segatex_msg ( LOG_INFO, "this is segatexd-server" );
         //for debug
         //segatex_msg(LOG_INFO, "PID of segatexd is %d",read_pid());
         //for debug
-        sleep(delay);
+        sleep ( delay );
     }
 
     /* Close log file, when it is used. */
-    if (log_stream != stdout) {
-        fclose(log_stream);
+    if ( log_stream != stdout ) {
+        fclose ( log_stream );
     }
 
     /* Write system log and close it. */
-    segatex_msg(LOG_INFO, "Stopped %s", app_name);
-    closelog();
+    segatex_msg ( LOG_INFO, "Stopped %s", app_name );
+    closelog ( );
 
     /* unlink pid file */
-    if (pid_file_name != NULL)
-        unlink(pid_file_name);
+    if ( pid_file_name != NULL )
+        unlink ( pid_file_name );
 
     return EXIT_SUCCESS;
 }

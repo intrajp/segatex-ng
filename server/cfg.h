@@ -3,7 +3,7 @@
    This file contains the contents of segatex-ng.
 
    Copyright (C) 2014 Arthur de Jong
-   Copyright (C) 2017 Shintaro Fujiwara
+   Copyright (C) 2017-2018 Shintaro Fujiwara
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -30,17 +30,22 @@ struct segatex_ng_config
     int threads;
 };
 
-/* this is a pointer to the global configuration, it should be available
-   once cfg_init() was called */
+/*  this is a pointer to the global configuration, it should be available
+ *  once cfg_init() was called
+*/
+
 extern struct segatex_ng_config *segatexd_cfg;
 
-/* Initialize the configuration in segatexd_cfg. This method
-   will read the default configuration file and call exit()
-   if an error occurs. */
+/*  Initialize the configuration in segatexd_cfg. This method
+ *  will read the default configuration file and call exit()
+ *  if an error occurs.
+*/
 /* This function could be called anywhere, so declared here. */
-void cfg_init(const char *fname);
+
+void cfg_init ( const char *fname );
+
 /* This function could be called anywhere, so declared here. */
-//void cfg_read(const char *filename,struct segatex_ng_config *cfg);
-void cfg_read(const char *fname,struct segatex_ng_config *cfg);
+
+void cfg_read ( const char *fname, struct segatex_ng_config *cfg );
 
 #endif /* SEGATEXD__CFG_H */

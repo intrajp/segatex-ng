@@ -2,7 +2,7 @@
    daemonize.h - definition of functions for daemonising an application
 
    Copyright (C) 2014 Arthur de Jong
-   Copyright (C) 2017 Shintaro Fujiwara 
+   Copyright (C) 2017-2018 Shintaro Fujiwara 
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -43,10 +43,10 @@
 */
 
 /* This closes all open file descriptors, except stdin, stdout and stderr. */
-void daemonize_closefds(void);
+void daemonize_closefds ( void );
 
 /* Redirect stdio, stdin and stderr to /dev/null. */
-void daemonize_redirect_stdio(void);
+void daemonize_redirect_stdio ( void );
 
 /* Detach from the controlling terminal and run in the background. This
    function does:
@@ -58,11 +58,11 @@ void daemonize_redirect_stdio(void);
    This function returns either an error which indicates that the
    daemonizing failed for some reason (usually sets errno), or returns
    without error indicating that the process has been daemonized. */
-int daemonize_daemon(void);
+int daemonize_daemon ( void );
 
 /* Signal that the original parent may exit because the service has been
    initialised. The status indicates the exit code of the original process and
    message, if not NULL or an empty string, is printed to stderr. */
-void daemonize_ready(int status, const char *message);
+void daemonize_ready ( int status, const char *message );
 
 #endif /* not SEGATEXD__DAEMONINZE_H */
