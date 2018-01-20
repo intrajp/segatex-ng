@@ -2,7 +2,7 @@
    This file contains the contents of segatex-ng.
 
   Copyright 2004,2005,2016 Red Hat Inc., Durham, North Carolina.
-   Copyright (C) 2017 Shintaro Fujiwara
+  Copyright (C) 2017-2018 Shintaro Fujiwara
   All Rights Reserved.
  
   This library is free software; you can redistribute it and/or
@@ -24,7 +24,6 @@
        Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
 */
 
-//#include "config.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include "libsegatex.h"
@@ -41,22 +40,22 @@ void set_sgmessage_mode(message_t mode, debug_message_t debug)
 	debug_message = debug;
 }
 
-void segatex_msg(int priority, const char *fmt, ...)
+void segatex_msg ( int priority, const char *fmt, ... )
 {
         va_list   ap;
 
-	if (message_mode == MSG_QUIET)
-		return;
+	if ( message_mode == MSG_QUIET )
+	    return;
 
-	if (priority == LOG_DEBUG && debug_message == DBG_NO)
-		return;
+	if ( priority == LOG_DEBUG && debug_message == DBG_NO )
+	    return;
 
-        va_start(ap, fmt);
-        if (message_mode == MSG_SYSLOG)
-                vsyslog(priority, fmt, ap);
+        va_start ( ap, fmt );
+        if ( message_mode == MSG_SYSLOG )
+            vsyslog ( priority, fmt, ap );
         else {
-                vfprintf(stderr, fmt, ap);
-		fputc('\n', stderr);
+            vfprintf ( stderr, fmt, ap );
+	    putc ( '\n', stderr );
 	}
-        va_end( ap );
+        va_end ( ap );
 }

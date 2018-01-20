@@ -26,7 +26,7 @@ The segatexd uses autoconf and automake for building.
 This is how I do the building right now.
 
 $ aclocal
-$ auconf
+$ autoconf
 $ automake --add-missing
 $ ./configure
 $ make 

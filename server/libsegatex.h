@@ -2,7 +2,7 @@
    This file contains the contents of segatex-ng.
  
   Copyright 2004-2017 Red Hat Inc., Durham, North Carolina.
-  Copyright(C) Shintaro Fujiwara
+  Copyright(C) 2017-2018 Shintaro Fujiwara
   All Rights Reserved.
  
   This library is free software; you can redistribute it and/or

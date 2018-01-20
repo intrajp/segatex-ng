@@ -19,7 +19,7 @@
 
 AC_PREREQ([2.69])
 AC_COPYRIGHT(
-[Copyright (C) 2017 Shintaro Fujiwara 
+[Copyright (C) 2017-2018 Shintaro Fujiwara 
 
 This configure script is derived from configure.ac which is free software;
 you can redistribute it and/or modify it under the terms of the GNU Lesser
