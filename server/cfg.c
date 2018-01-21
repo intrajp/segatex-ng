@@ -37,6 +37,7 @@
 #include "cfg.h"
 
 struct segatex_ng_config *segatexd_cfg=NULL;
+
 const char msg_cfg_read[] ="cfg_read was called by SIG_VALUE !\n";
 const char msg_cfg_read_ok[] ="file value was reloaded by SIG_VALUE !\n";
 
@@ -48,12 +49,12 @@ const char msg_cfg_read_ok[] ="file value was reloaded by SIG_VALUE !\n";
 
 /* set the configuration information to the defaults */
 
-void cfg_defaults(struct segatex_ng_config *cfg)
+void cfg_defaults ( struct segatex_ng_config *cfg )
 {
     //for debug
     printf("cfg_defaults was called !\n");
 
-    memset(cfg,0,sizeof(struct segatex_ng_config));
+    memset (cfg, 0, sizeof ( struct segatex_ng_config ) );
     if ( cfg == NULL )
     {
         printf("cfg.c: cfg_defaults() failed to memset");
@@ -84,7 +85,7 @@ static inline void check_argumentcount(const char *filename, int lnr,
    the buffer, NULL is returned. */
 /* This function is only called from this file, so set static.*/
 
-static char *get_token(char **line,char *buf,size_t buflen)
+static char *get_token (char **line, char *buf, size_t buflen )
 {
     //for debug
     //printf("get_token was called !\n");
@@ -338,3 +339,8 @@ void cfg_init ( const char *fname )
     cfg_read ( fname, segatexd_cfg );
     printf("segatexd_cfg:%p\n",segatexd_cfg);
 }
+
+/*
+ * these things should be re-written somehow... freeing object is needed
+*/
+

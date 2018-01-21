@@ -1,8 +1,8 @@
 /*
- *  main.h - header file for main.c 
+ *  main.c - main file for segatex-ng agent program.
  *  This file contains the contents of segatex-ng.
  *
- *  Copyright (C) 2017 Shintaro Fujiwara
+ *  Copyright (C) 2017-2018 Shintaro Fujiwara
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -20,16 +20,10 @@
  *  02110-1301 USA
 */
 
-#ifndef SEGATEXD__MAIN_H
-#define SEGATEXD__MAIN_H
+#ifndef SEGATEXD_AGENT_MAIN_H
+#define SEGATEXD_AGENT_MAIN_H
 
-/*  this is used to add extra format checking to the function calls as if this
- *  was a printf()-like function
-*/
-#define LIKE_PRINTF(format_idx, arg_idx) /* no attribute */
-
-/* this is a function of libselinux */
-
-int is_selinux_enabled ( );
+//void discover_interfaces ( );
 
 #endif
+
