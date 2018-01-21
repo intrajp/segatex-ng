@@ -1,6 +1,6 @@
 # configure.ac - process this file with autoconf to produce configure
 #
-# Copyright (C) 2017 Shintaro Fujiwara 
+# Copyright (C) 2017-2018 Shintaro Fujiwara 
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -134,6 +134,182 @@ AC_ARG_WITH(segatexd-socket,
 AC_DEFINE_UNQUOTED(SEGATEXD_SOCKET, "$SEGATEXD_SOCKET", [The location of the socket used for communicating.])
 AC_SUBST(SEGATEXD_SOCKET)
 
+######## transcribed from ISC DHCP 4.3.6 code ########
+
+# SIOCGLIFCONF uses some transport structures.  Trick is not all platforms
+# use the same structures.  We like to use 'struct lifconf' and 'struct
+# lifreq', but we'll use these other structures if they're present.  HPUX
+# does not define 'struct lifnum', but does use SIOCGLIFNUM - they use an
+# int value.
+#
+AC_MSG_CHECKING([for struct lifnum])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[ #include <sys/types.h>
+  #include <sys/socket.h>
+  #include <net/if.h>
+]], [[ struct lifnum a;
+]])],[AC_MSG_RESULT(yes)
+         AC_DEFINE([ISC_PLATFORM_HAVELIFNUM], [1],
+                   [Define to 1 if the system has 'struct lifnum'.])],[AC_MSG_RESULT(no)])
+
+AC_MSG_CHECKING([for struct if_laddrconf])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[ #include <sys/types.h>
+  #include <net/if6.h>
+]], [[ struct if_laddrconf a;
+]])],[AC_MSG_RESULT(yes)
+         AC_DEFINE([ISC_PLATFORM_HAVEIF_LADDRCONF], [1],
+                   [Define to 1 if the system has 'struct if_laddrconf'.])],[AC_MSG_RESULT(no)])
+
+AC_MSG_CHECKING([for struct if_laddrreq])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
+ #include <net/if6.h>
+]], [[ struct if_laddrreq a;
+]])],[AC_MSG_RESULT(yes)
+         AC_DEFINE([ISC_PLATFORM_HAVEIF_LADDRREQ], [1],
+                   [Define to 1 if the system has 'struct if_laddrreq'.])],[AC_MSG_RESULT(no)])
+
+#
+# check for GCC noreturn attribute
+#
+AC_MSG_CHECKING(for GCC noreturn attribute)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[void foo() __attribute__((noreturn));]])],[AC_MSG_RESULT(yes)
+         AC_DEFINE([ISC_DHCP_NORETURN], [__attribute__((noreturn))],
+                   [Define to the string for a noreturn attribute.])],[AC_MSG_RESULT(no)
+         AC_DEFINE([ISC_DHCP_NORETURN], [],
+                   [Define to the string for a noreturn attribute.])])
+
+# Look for optional headers.
+AC_CHECK_HEADERS(sys/socket.h net/if_dl.h net/if6.h regex.h)
+
+# Solaris needs some libraries for functions
+AC_SEARCH_LIBS(socket, [socket])
+AC_SEARCH_LIBS(inet_ntoa, [nsl])
+
+AC_SEARCH_LIBS(inet_aton, [socket nsl], ,
+        AC_DEFINE([NEED_INET_ATON], [1],
+                  [Define to 1 if the inet_aton() function is missing.]))
+
+# Check for a standalone regex library.
+AC_SEARCH_LIBS(regcomp, [regex])
+
+AC_CHECK_FUNCS(strlcat)
+
+# For HP/UX we need -lipv6 for if_nametoindex, perhaps others.
+AC_SEARCH_LIBS(if_nametoindex, [ipv6])
+
+# check for /dev/random (declares HAVE_DEV_RANDOM)
+AC_MSG_CHECKING(for random device)
+AC_ARG_WITH(randomdev,
+        AS_HELP_STRING([--with-randomdev=PATH],[Path for random device
+                       (default is /dev/random)]),
+        use_randomdev="$withval", use_randomdev="unspec")
+if test "$use_randomdev" = "unspec"; then
+        if test "$cross_compiling" = "yes"; then
+                AC_MSG_RESULT(unspecified)
+                AC_MSG_ERROR([ need --with-randomdev=PATH or --with-randomdev=no])
+        fi
+        use_randomdev="/dev/random"
+elif test "$use_randomdev" = "yes"; then
+        use_randomdev="/dev/random"
+fi
+if test "$use_randomdev" = "no"; then
+        AC_MSG_RESULT(disabled)
+        BINDCONFIG="$BINDCONFIG --with-randomdev=no"
+else
+        if test "$cross_compiling" = "yes"; then
+                AC_MSG_RESULT($use_randomdev (unchecked))
+        else
+                AC_MSG_RESULT($use_randomdev)
+                AC_CHECK_FILE($use_randomdev,
+                    AC_DEFINE([HAVE_DEV_RANDOM], [1],
+                        [Define to 1 if you have the /dev/random or other configured file.]),
+                    AC_MSG_ERROR(cannot find $use_randomdev))
+        fi
+        BINDCONFIG="$BINDCONFIG --with-randomdev=$use_randomdev"
+fi
+
+# see if there is a "sa_len" field in our interface information structure
+AC_CHECK_MEMBER(struct sockaddr.sa_len,
+        AC_DEFINE([HAVE_SA_LEN], [],
+                  [Define to 1 if the sockaddr structure has a length field.]),
+        ,
+        [#include <sys/socket.h>])
+
+# figure out pointer size
+SAVE_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS -I$srcdir"
+AC_CHECK_SIZEOF(struct iaddr *, , [
+#include "includes/inet.h"
+#include <stdio.h>
+])
+CFLAGS="$SAVE_CFLAGS"
+
+# Solaris does not have the msg_control or msg_controlen members
+# in the msghdr structure unless you define:
+#
+#   _XOPEN_SOURCE, _XOPEN_SOURCE_EXTENDED, and __EXTENSIONS__
+#
+# See the "standards" man page for details.
+#
+# We check for the msg_control member, and if it is not found, we check
+# again with the appropriate defines added to the CFLAGS. (In order to
+# do this we have to remove the check from the cache, which is what the
+# "unset" is for.)
+AC_CHECK_MEMBER(struct msghdr.msg_control,,
+        [CFLAGS="$CFLAGS -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1"
+         CFLAGS="$CFLAGS -D__EXTENSIONS__"
+         unset ac_cv_member_struct_msghdr_msg_control
+         AC_CHECK_MEMBER(struct msghdr.msg_control,,
+                [AC_MSG_ERROR([Missing msg_control member in
+                               msg_control structure.])],
+                [
+#include <sys/types.h>
+#include <sys/socket.h>
+                ])
+        ],
+        [
+#include <sys/types.h>
+#include <sys/socket.h>
+        ])
+
+AC_CHECK_MEMBER(struct tpacket_auxdata.tp_vlan_tci,
+    [AC_DEFINE([VLAN_TCI_PRESENT], [1], [tpacket_auxdata.tp_vlan_tci present])]
+    ,, [#include <linux/if_packet.h>])
+
+BINDDIR=
+BINDSRCDIR=
+AC_ARG_WITH(libbind,
+        AS_HELP_STRING([--with-libbind=PATH],[bind includes and libraries are in PATH
+                        (default is ./bind)]),
+        use_libbind="$withval", use_libbind="no")
+case "$use_libbind" in
+yes)
+        BINDDIR="\${top_srcdir}/bind"
+        BINDSRCDIR="\${top_srcdir}/bind"
+        ;;
+no)
+        BINDDIR="\${top_srcdir}/bind"
+        BINDSRCDIR="\${top_srcdir}/bind"
+        ;;
+*)
+        BINDDIR="$use_libbind"
+        if test ! -d "$srcdir/bind"; then
+                # no bind directory, create it with a fake Makefile.in
+                # (AC_CONFIG_FILES and top Makefile refer to it so
+                # it must exits)
+                mkdir $srcdir/bind
+                cat > $srcdir/bind/Makefile.in << EOF
+# placeholder
+all check clean distclean distdir install uninstall:
+
+EOF
+        fi
+        ;;
+esac
+AC_SUBST(BINDDIR)
+AC_SUBST(BINDSRCDIR)
+
+######## transcribed from ISC DHCP 4.3.6 code ########
+
 ## check threading stuff
 #AX_PTHREAD(, AC_MSG_ERROR([no support for pthreads]))
 #pthread_save_CFLAGS="$CFLAGS"
@@ -145,4 +321,10 @@ AC_SUBST(SEGATEXD_SOCKET)
 #LIBS="$pthread_save_LIBS"
 
 AC_PROG_CC
-AC_OUTPUT(Makefile server/Makefile)
+#AC_OUTPUT(Makefile server/Makefile)
+AC_CONFIG_FILES([
+  Makefile
+  server/Makefile
+  agent/Makefile
+])
+AC_OUTPUT
