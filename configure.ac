@@ -134,7 +134,12 @@ AC_ARG_WITH(segatexd-socket,
 AC_DEFINE_UNQUOTED(SEGATEXD_SOCKET, "$SEGATEXD_SOCKET", [The location of the socket used for communicating.])
 AC_SUBST(SEGATEXD_SOCKET)
 
-######## transcribed from ISC DHCP 4.3.6 code ########
+######## transcribed from ISC DHCP 4.3.6 code from line 517-518 ########
+# see if ifaddrs.h is available
+AC_CHECK_HEADERS(ifaddrs.h)
+######## end transcribed from ISC DHCP 4.3.6 code from line 517-518 ########
+
+######## transcribed from ISC DHCP 4.3.6 code from line 550-720 ########
 
 # SIOCGLIFCONF uses some transport structures.  Trick is not all platforms
 # use the same structures.  We like to use 'struct lifconf' and 'struct
@@ -308,7 +313,7 @@ esac
 AC_SUBST(BINDDIR)
 AC_SUBST(BINDSRCDIR)
 
-######## transcribed from ISC DHCP 4.3.6 code ########
+######## transcribed from ISC DHCP 4.3.6 code from line 550-720 ########
 
 ## check threading stuff
 #AX_PTHREAD(, AC_MSG_ERROR([no support for pthreads]))

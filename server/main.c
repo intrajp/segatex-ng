@@ -33,7 +33,7 @@
 #include <sys/types.h>
 #include "main.h"
 #include "../segatexd.h"
-#include "message.c"
+#include "../common/message.c"
 #include "daemonize.c"
 
 /* brief Print help for this application */
@@ -166,21 +166,13 @@ int main ( int argc, char *argv [ ] )
     signal ( SIGHUP, handle_signal );
 
     int i;
-    int i2;
-    int fd2;
 
     i = is_selinux_enabled ( );
-    i2 = audit_is_enabled (1 );
-    if ( i = 1 )
+
+    if ( i == 1 )
         printf("SELinux is enabled.\n");
     else
         printf("SELinux is not enabled.\n");
-    if ( i2 = 1 )
-        printf("Audit is enabled.\n");
-    else if ( i2 = 0 )
-        printf("Audit is not enabled.\n");
-    else if ( i2 = -1 )
-        printf("Audit got error.\n");
 
     /* SIGINT should have running as 3*/
     if ( running != 3 )
