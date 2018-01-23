@@ -1,29 +1,29 @@
 /*
-   cfg.c - functions for configuration information
-   This file contains the contents of segatex-ng.
-
-   Copyright (C) 2014 Arthur de Jong
-   Copyright (C) 2017-2018 Shintaro Fujiwara
-
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   This library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
-
-   You should have received a copy of the GNU Lesser General Public
-   License along with this library; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-   02110-1301 USA
-
-   Has borrowed some from libaudit.c. These guys will be happy to be mentioned here.
-     Authors of libaudit.c 
-       Steve Grubb <sgrubb@redhat.com>
-       Rickard E. (Rik) Faith <faith@redhat.com>
+ *  cfg.c - functions for configuration information
+ *  This file contains the contents of segatex-ng.
+ *
+ *  Copyright (C) 2014 Arthur de Jong
+ *  Copyright (C) 2017-2018 Shintaro Fujiwara
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ *  02110-1301 USA
+ *
+ *  Has borrowed some from libaudit.c. These guys will be happy to be mentioned here.
+ *    Authors of libaudit.c 
+ *      Steve Grubb <sgrubb@redhat.com>
+ *      Rickard E. (Rik) Faith <faith@redhat.com>
 */
 
 #include <stdlib.h>
@@ -36,10 +36,24 @@
 #include "../segatexd.h"
 #include "cfg.h"
 
-struct segatex_ng_config *segatexd_cfg=NULL;
+/*
+ *  initializing object member contents
+ *  this could be overrided by another function
+*/
+/*
+struct segatex_ng_config segatexd_cfg_raw = 
+    {
+        10, // number of threads
+    };
+*/
 
-const char msg_cfg_read[] ="cfg_read was called by SIG_VALUE !\n";
-const char msg_cfg_read_ok[] ="file value was reloaded by SIG_VALUE !\n";
+//struct segatex_ng_config *segatexd_cfg = &segatexd_cfg_raw;
+
+/* should be set to NULL, this will be checked in cfg_init() */
+struct segatex_ng_config *segatexd_cfg = NULL;
+
+const char msg_cfg_read [ ] ="cfg_read was called by SIG_VALUE !\n";
+const char msg_cfg_read_ok [ ] ="file value was reloaded by SIG_VALUE !\n";
 
 /* the maximum line length in the configuration file */
 #define MAX_LINE_LENGTH    4096
@@ -47,45 +61,46 @@ const char msg_cfg_read_ok[] ="file value was reloaded by SIG_VALUE !\n";
 /* the delimiters of tokens */
 #define TOKEN_DELIM " \t\n\r"
 
-/* set the configuration information to the defaults */
+/* set the configuration information to the defaults after memory is allocated*/
 
 void cfg_defaults ( struct segatex_ng_config *cfg )
 {
-    //for debug
-    printf("cfg_defaults was called !\n");
-
-    memset (cfg, 0, sizeof ( struct segatex_ng_config ) );
+    memset ( cfg, 0, sizeof ( struct segatex_ng_config ) );
     if ( cfg == NULL )
     {
         printf("cfg.c: cfg_defaults() failed to memset");
         exit(EXIT_FAILURE);
     }
-    cfg->threads=5;
+    //for debug
+    printf("cfg_defaults was called !\n");
+
+    cfg->threads = 5;
 }
 
 /* check that the condition is true and otherwise log an error
    and bail out */
 /* This function is only called from this file, so set static.*/
 
-static inline void check_argumentcount(const char *filename, int lnr,
-                                       const char *keyword, int condition)
+static inline void check_argumentcount ( const char *filename, int lnr,
+                                       const char *keyword, int condition )
 {
-    if (!condition)
+    if ( !condition )
     {
-        segatex_msg(LOG_ERR, "%s:%d: %s: wrong number of arguments",
-                filename, lnr, keyword);
-        exit(EXIT_FAILURE);
+        segatex_msg ( LOG_ERR, "%s:%d: %s: wrong number of arguments",
+                filename, lnr, keyword );
+        exit ( EXIT_FAILURE );
     }
 }
 
 /* This function works like strtok() except that the original string is
-   not modified and a pointer within str to where the next token begins
-   is returned (this can be used to pass to the function on the next
-   iteration). If no more tokens are found or the token will not fit in
-   the buffer, NULL is returned. */
+ *  not modified and a pointer within str to where the next token begins
+ *  is returned (this can be used to pass to the function on the next
+ *  iteration). If no more tokens are found or the token will not fit in
+ *  the buffer, NULL is returned. 
+*/
 /* This function is only called from this file, so set static.*/
 
-static char *get_token (char **line, char *buf, size_t buflen )
+static char *get_token ( char **line, char *buf, size_t buflen )
 {
     //for debug
     //printf("get_token was called !\n");
@@ -112,7 +127,7 @@ static char *get_token (char **line, char *buf, size_t buflen )
     /* limit the token length */
 
     if ( len >= buflen )
-        len = buflen-1;
+        len = buflen - 1;
 
     //for debug
     //printf("len is %d\n",len);
@@ -136,7 +151,7 @@ static char *get_token (char **line, char *buf, size_t buflen )
 /* This function is only called from this file, so set static.*/
 
 static int get_int ( const char *filename, int lnr,
-                    const char *keyword, char **line)
+                    const char *keyword, char **line )
 {
     char token [ 32 ];
     //for debug
@@ -157,7 +172,7 @@ static int get_int ( const char *filename, int lnr,
 /* This function is only called from this file, so set static.*/
 
 static void get_eol ( const char *filename, int lnr,
-                    const char *keyword, char **line)
+                    const char *keyword, char **line )
 {
     //for debug
     //printf("get_eol was called !\n");
@@ -175,12 +190,12 @@ void cfg_read ( const char *filename, struct segatex_ng_config *cfg )
 {
     char line_break [ ]= "\n" ;
     char struct_str [ MAX_LINE_LENGTH ] = "";
-    char struct_pre [ ] = "cfg->threads is ";
+    char struct_pre [ 17 ] = "cfg->threads is ";
     char threads_str [ 24 ];
     char filename_str [ MAX_LINE_LENGTH ];
-    char filename_pre [ ] = "file name is ";
+    char filename_pre [ 14 ] = "file name is ";
 
-    strcpy ( filename_str, filename_pre );
+    strncpy ( filename_str, filename_pre, 16 );
     strcat ( filename_str, filename );
     strcat ( filename_str, line_break );
 
@@ -250,6 +265,7 @@ void cfg_read ( const char *filename, struct segatex_ng_config *cfg )
     if ( ( fp=fopen ( filename,"r" ) ) == NULL )
     {
         segatex_msg ( LOG_ERR, "cannot open config file (%s): %s", filename, strerror ( errno ) );
+        close ( fd );
         exit ( EXIT_FAILURE );
     }
     /* read file and parse lines */
@@ -262,6 +278,7 @@ void cfg_read ( const char *filename, struct segatex_ng_config *cfg )
         if ( ( i <= 0 ) || ( line [ i - 1 ] != '\n' ) )
         {
             segatex_msg ( LOG_ERR, "%s:%d: line too long or last line missing newline", filename, lnr );
+            close ( fd );
             exit ( EXIT_FAILURE );
         }
         line [ i - 1 ] = '\0';
@@ -286,6 +303,7 @@ void cfg_read ( const char *filename, struct segatex_ng_config *cfg )
         else
         {
             segatex_msg ( LOG_ERR, "%s:%d: unknown keyword: '%s'", filename, lnr, keyword );
+            close ( fd );
             exit ( EXIT_FAILURE );
         }
     }
@@ -323,7 +341,7 @@ void cfg_init ( const char *fname )
         segatex_msg ( LOG_CRIT, "cfg_init() may only be called once" );
         exit ( EXIT_FAILURE );
     }
-    /* allocate the memory (this memory is not freed anywhere) */
+    /* allocate the memory (this memory is not freed anywhere, it's ok, outside this socpe, it's NULL) */
     segatexd_cfg = (struct segatex_ng_config * ) malloc ( sizeof ( struct segatex_ng_config ) );
     //for debug
     //free(segatexd_cfg);
@@ -335,12 +353,21 @@ void cfg_init ( const char *fname )
 
     /* clear configuration */
     cfg_defaults ( segatexd_cfg );
+    //for debug
+    //free(segatexd_cfg);
     /* read configfile */
     cfg_read ( fname, segatexd_cfg );
     printf("segatexd_cfg:%p\n",segatexd_cfg);
 }
 
 /*
- * these things should be re-written somehow... freeing object is needed
+ * after outside cfg_init(), segatexd_cfg should be null, so, no need this function? 
 */
 
+void cfg_clear ( )
+{
+    printf("freeing the config pointer, cause 've already read stuff -- segatexd_cfg:%p\n",segatexd_cfg);
+    free ( segatexd_cfg );
+    segatexd_cfg = NULL;
+    printf("should be NULL -- segatexd_cfg:%p\n",segatexd_cfg);
+}
