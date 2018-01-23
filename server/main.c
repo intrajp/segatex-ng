@@ -242,7 +242,6 @@ int main ( int argc, char *argv [ ] )
 
     /* Write system log and close it. */
     segatex_msg ( LOG_INFO, "Stopped %s", app_name );
-    closelog ( );
 
     /* unlink pid file */
     if ( pid_file_name != NULL )

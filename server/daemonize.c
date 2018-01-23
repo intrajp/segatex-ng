@@ -1,43 +1,43 @@
 /*
-   daemoninze.c - functions for properly daemonising an application
-
-   This file contains the contents of segatex-ng.
-
-   Copyright (C) 2017-2018 Shintaro Fujiwara
-
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   This library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
-
-   You should have received a copy of the GNU Lesser General Public
-   License along with this library; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-   02110-1301 USA
+ *  daemoninze.c - functions for properly daemonising an application
+ *
+ *  This file contains the contents of segatex-ng.
+ *
+ *  Copyright (C) 2017-2018 Shintaro Fujiwara
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ *  02110-1301 USA
 */
 /*
-   -- from nslcd daemonize.h--
-   To properly run as a daemon an application should:
-
-   - close all open file descriptors (see daemonize_closefds() for that)
-   - (re)set proper signal handlers and signal mask
-   - sanitise the environment
-   - fork() / setsid() / fork() to detach from terminal, become process
-     leader and run in the background (see daemonize_demon() for that)
-   - reconnect stdin/stdout/stderr to /dev/null (see
-     daemonize_redirect_stdio() for that)
-   - set the umask to a reasonable value
-   - chdir(/) to avoid locking any mounts
-   - drop privileges as appropriate
-   - chroot() if appropriate
-   - create and lock a pidfile
-   - exit the starting process if initialisation is complete (see
-     daemonize_ready() for that)
+ *  -- from nslcd daemonize.h--
+ *  To properly run as a daemon an application should:
+ *
+ *  - close all open file descriptors (see daemonize_closefds() for that)
+ *  - (re)set proper signal handlers and signal mask
+ *  - sanitise the environment
+ *  - fork() / setsid() / fork() to detach from terminal, become process
+ *    leader and run in the background (see daemonize_demon() for that)
+ *  - reconnect stdin/stdout/stderr to /dev/null (see
+ *    daemonize_redirect_stdio() for that)
+ *  - set the umask to a reasonable value
+ *  - chdir(/) to avoid locking any mounts
+ *  - drop privileges as appropriate
+ *  - chroot() if appropriate
+ *  - create and lock a pidfile
+ *  - exit the starting process if initialisation is complete (see
+ *    daemonize_ready() for that)
 */
 
 #define GLOBAL_VALUE_DEFINE
@@ -63,9 +63,9 @@ static char *pid_file_name = "/var/run/segatexd/segatexd.pid";
 static int pid_fd = -1;
 static char *app_name = "segatexd";
 static FILE *log_stream;
-const char msg_sigint [ ] ="segatexd caught SIGINT\n";
-const char msg_sighup [ ] ="segatexd caught SIGHUP\n";
-const char msg_sigchld [ ] ="segatexd caught SIGCHLD\n";
+const char msg_sigint [ 30 ] ="segatexd caught SIGINT\n";
+const char msg_sighup [ 30 ] ="segatexd caught SIGHUP\n";
+const char msg_sigchld [ 30 ] ="segatexd caught SIGCHLD\n";
 int SIG_VALUE;
 
 /* brief This function will daemonize this app */
@@ -156,7 +156,7 @@ static void daemonize ( )
 }
 
 /* read pid_file_name and return pid of segatexd.
- */
+*/
 pid_t read_pid ( )
 {
     pid_t pid = 0;
@@ -173,7 +173,7 @@ pid_t read_pid ( )
     /* read file and parse lines */
     while ( fgets ( linebuf, sizeof ( linebuf ), fp ) != NULL )
     {
-        line=linebuf;
+        line = linebuf;
         //segatex_msg(LOG_INFO,"line:%s",line);
     }
     pid = atoi ( line );
@@ -182,7 +182,7 @@ pid_t read_pid ( )
 
 /* brief Callback function for handling signals.
  * param	sig	identifier of signal
- */
+*/
 void handle_signal ( int sig )
 {
     if ( sig == SIGINT ) {
@@ -193,7 +193,9 @@ void handle_signal ( int sig )
         log_stream = stdout;
         /* Reset signal handling to default behavior */
         signal ( SIGINT, SIG_DFL );
-    } else if (sig == SIGHUP) {
+    }
+    else if (sig == SIGHUP)
+    {
         /*showing this is SIGHUP process*/
         write ( STDOUT_FILENO, msg_sighup, sizeof ( msg_sighup ) - 1 );
         segatex_msg ( LOG_INFO, "%s", msg_sighup );
@@ -206,8 +208,10 @@ void handle_signal ( int sig )
         /*re-daemonize*/
         daemonize ( );
         /* Reset signal handling to default behavior */
-        signal(SIGINT, SIG_DFL);
-    } else if ( sig == SIGCHLD ) {
+        signal ( SIGINT, SIG_DFL );
+    }
+    else if ( sig == SIGCHLD )
+    {
         /*showing this is SIGCHLD process*/
         write ( STDOUT_FILENO, msg_sigchld, sizeof ( msg_sigchld ) - 1 );
     }
