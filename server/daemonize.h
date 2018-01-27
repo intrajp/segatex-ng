@@ -23,6 +23,10 @@
 #ifndef SEGATEXD__DAEMONINZE_H
 #define SEGATEXD__DAEMONINZE_H 1
 
+typedef struct segatex_obj {
+    const char *pid_no;
+};
+
 /*
  *  To properly run as a daemon an application should:
  *

@@ -31,6 +31,8 @@
 #include <ifaddrs.h>
 #include <unistd.h>
 #include <linux/if_link.h>
+#include "tcp_client.c" 
+#include "../common/message.c"
 
 int main ( int argc, char *argv [ ] )
 {
@@ -98,6 +100,9 @@ int main ( int argc, char *argv [ ] )
     }
 
     freeifaddrs ( ifaddr );
+
+    /* now test the tcp_client feature */
+    tcp_client ( );
 
     puts ( "-------- End This is segatexd-agent --------" );
 

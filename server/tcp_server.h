@@ -1,8 +1,7 @@
 /*
- *  segatexd.h - definition of segatexd information
- *  This file contains the contents of segatex-ng.
- * 
- *  Copyright (C) 2017-2018 Shintaro Fujiwara
+ *  tcp_server.h - definition of functions for tcp_server 
+ *
+ *  Copyright (C) 2018 Shintaro Fujiwara 
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -20,22 +19,11 @@
  *  02110-1301 USA
 */
 
-#ifndef SEGATEXD_H
-#define SEGATEXD_H
+#ifndef SEGATEXD__TCP_SERVER_H
+#define SEGATEXD__TCP_SERVER_H 1
 
-#ifdef GLOBAL_VALUE_DEFINE
-    #define GLOBAL
-    #define GLOBAL_VAL(v) = (v)
-#else
-    #define GLOBAL extern
-    #define GLOBAL_VAL(v)
+/* tcp server function for segatexd */
+
+void tcp_server ( void );
+
 #endif
-
-/*this difinition should be 0*/
-GLOBAL int SIG_VALUE; 
-
-/* configuration file of this library */
-static const char const *fname = "/etc/segatexd.conf";
-static const char *pid_file_name = "/var/run/segatexd/segatexd.pid";
-
-#endif /* SEGATEXD_H */
