@@ -59,7 +59,7 @@
 static int running = 0;
 static int delay = 120;
 static int counter = 0;
-static char *pid_file_name = "/var/run/segatexd/segatexd.pid";
+//static char *pid_file_name = "/var/run/segatexd/segatexd.pid";
 static int pid_fd = -1;
 static char *app_name = "segatexd";
 static FILE *log_stream;
@@ -133,10 +133,11 @@ static void daemonize ( )
     stdout = fopen ( "/dev/null", "w+" );
     stderr = fopen ( "/dev/null", "w+" );
 
+    char str [ 256 ];
+
     /* Try to write PID of daemon to lockfile */
     if ( pid_file_name != NULL )
     {
-        char str [ 256 ];
         pid_fd = open ( pid_file_name, O_RDWR | O_CREAT, 0640 );
         if ( pid_fd < 0 ) {
             /* Can't open lockfile */
@@ -152,7 +153,7 @@ static void daemonize ( )
         /* Write PID to lockfile */
         write ( pid_fd, str, strlen ( str ) );
     }
-    syslog ( LOG_INFO, "segatexd daemonize process succeeded" );
+    syslog ( LOG_INFO, "segatexd daemonize process succeeded pid is %s", str );
 }
 
 /* read pid_file_name and return pid of segatexd.

@@ -35,6 +35,7 @@
 #include "../segatexd.h"
 #include "../common/message.c"
 #include "daemonize.c"
+#include "tcp_server.c"
 
 /* brief Print help for this application */
 
@@ -80,6 +81,31 @@ static void avoid_oom_killer ( void )
         segatex_msg ( LOG_NOTICE, "Unable to adjust out of memory score" );
 
     close ( oomfd );
+}
+
+/*  This function closes the daemon */
+ 
+static int close_daemon ( void )
+{
+    pid_t pid_x;
+    /* Close log file, when it is used. */
+    if ( log_stream != stdout ) {
+        fclose ( log_stream );
+    }
+
+    /* Write system log and close it. */
+    segatex_msg ( LOG_INFO, "Stopped %s", app_name );
+
+    pid_x = read_pid ( );
+    printf ( "read_pid();%d\n", pid_x );
+
+    /* unlink pid file */
+    if ( pid_file_name != NULL )
+        unlink ( pid_file_name );
+
+    kill ( pid_x, SIGUSR1 );
+
+    exit ( 0 );
 }
 
 /* Main function */
@@ -136,7 +162,6 @@ int main ( int argc, char *argv [ ] )
                 kill ( read_pid ( ), SIGINT );
                 break;
             case 'd':
-                //printf("duplicate_value:%d\n",duplicate_value);
                 if ( duplicate_value == 1 ) {
                     printf("-r, -s and -d could not be selected at the same time\n");
                     return EXIT_FAILURE; 
@@ -165,7 +190,7 @@ int main ( int argc, char *argv [ ] )
     signal ( SIGINT, handle_signal );
     signal ( SIGHUP, handle_signal );
 
-    int i;
+    int i,j;
 
     i = is_selinux_enabled ( );
 
@@ -209,43 +234,38 @@ int main ( int argc, char *argv [ ] )
     }
 
     /* Never ending loop of server */
-    while ( running == 1 ) {
+    //while ( running == 1 ) {
+    if ( running == 1 ) {
         /* Debug print */
         ret = fprintf ( log_stream, "Debug: %d\n", counter++ );
         if (ret < 0) {
             segatex_msg ( LOG_ERR, "Can not write to log stream: %s, error: %s",
                 ( log_stream == stdout ) ? "stdout" : log_file_name, strerror ( errno ) );
-            break;
+            close_daemon ( );
         }
         ret = fflush ( log_stream );
         if ( ret != 0 ) {
             segatex_msg ( LOG_ERR, "Can not fflush() log stream: %s, error: %s",
                 ( log_stream == stdout ) ? "stdout" : log_file_name, strerror ( errno ) );
-            break;
+            close_daemon ( );
         }
         /* TODO: dome something useful here */
 
         /* Real server should use select() or poll() for waiting at
          * asynchronous event. Note: sleep() is interrupted, when
-         * signal is received. */
+         * signal is received. 
+        */
         segatex_msg ( LOG_INFO, "this is segatexd-server" );
-        //for debug
-        //segatex_msg(LOG_INFO, "PID of segatexd is %d",read_pid());
-        //for debug
-        sleep ( delay );
+
+        /* Never ending loop of server */
+        tcp_server ( );
+        /* end Never ending loop of server */
+
+        /* sleep for a while */
+        //sleep ( delay );
     }
 
-    /* Close log file, when it is used. */
-    if ( log_stream != stdout ) {
-        fclose ( log_stream );
-    }
+    close_daemon ( );
 
-    /* Write system log and close it. */
-    segatex_msg ( LOG_INFO, "Stopped %s", app_name );
-
-    /* unlink pid file */
-    if ( pid_file_name != NULL )
-        unlink ( pid_file_name );
-
-    return EXIT_SUCCESS;
+    return ( EXIT_SUCCESS );
 }
