@@ -190,7 +190,7 @@ int main ( int argc, char *argv [ ] )
     signal ( SIGINT, handle_signal );
     signal ( SIGHUP, handle_signal );
 
-    int i,j;
+    int i;
 
     i = is_selinux_enabled ( );
 
