@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 2018-01-28 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
     Fixed to send file from server to agent 
+=======
+>>>>>>> 9980ac25d22e72f60cdeeba2e45cec6422b86e4f
 2018-01-27 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
     Added tcp server feature 
 2018-01-21 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
