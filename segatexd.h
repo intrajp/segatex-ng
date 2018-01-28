@@ -35,7 +35,7 @@
 GLOBAL int SIG_VALUE; 
 
 /* configuration file of this library */
-static const char const *fname = "/etc/segatexd.conf";
-static const char *pid_file_name = "/var/run/segatexd/segatexd.pid";
+//static const char *fname = "/etc/segatexd.conf";
+//static const char *pid_file_name = "/var/run/segatexd/segatexd.pid";
 
 #endif /* SEGATEXD_H */

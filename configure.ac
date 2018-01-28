@@ -58,7 +58,7 @@ AC_ARG_ENABLE(debug,
               [if test "x$enableval" != "xno" ; then CFLAGS="-g -DDEBUG $CFLAGS" ; fi])
 
 # check for extra compiler warnings
-DESIRED_CFLAGS=""
+DESIRED_CFLAGS="-Wall"
 AC_ARG_ENABLE(warnings,
               AS_HELP_STRING([--enable-warnings],
                              [enable extra compiler warnings (gcc)]),
@@ -116,14 +116,22 @@ AC_ARG_WITH(segatexd-conf-file,
 AC_DEFINE_UNQUOTED(SEGATEXD_CONF_PATH, "$SEGATEXD_CONF_PATH", [Path to segatexd configuration file.])
 AC_SUBST(SEGATEXD_CONF_PATH)
 
+AC_ARG_WITH(segatexd-data-file,
+            AS_HELP_STRING([--with-segatexd-data-file=PATH],
+                           [path to segatexd data file @<:@/usr/share/segatexd/segatexd_tcp_send_data.txt@:>@]),
+            [ SEGATEXD_DATA_PATH="$with_segatexd_data_file" ],
+            [ SEGATEXD_DATA_PATH="/usr/share/segatexd" ])
+AC_DEFINE_UNQUOTED(SEGATEXD_DATA_PATH, "$SEGATEXD_DATA_PATH", [Path to segatexd data file.])
+AC_SUBST(SEGATEXD_DATA_PATH)
+
 # where should the pidfile be written
 AC_ARG_WITH(segatexd-pidfile,
             AS_HELP_STRING([--with-segatexd-pidfile=PATH],
                            [path to pidfile @<:@/var/run/segatexd/segatexd.pid@:>@]),
-            [ SEGATEXD_PIDFILE="$with_segatexd_pidfile" ],
-            [ SEGATEXD_PIDFILE="/var/run/segatexd/segatexd.pid" ])
-AC_DEFINE_UNQUOTED(SEGATEXD_PIDFILE, "$SEGATEXD_PIDFILE", [The location of the pidfile used for checking availability of the segatexd.])
-AC_SUBST(SEGATEXD_PIDFILE)
+            [ SEGATEXD_PID_PATH="$with_segatexd_pidfile" ],
+            [ SEGATEXD_PID_PATH="/var/run/segatexd" ])
+AC_DEFINE_UNQUOTED(SEGATEXD_PID_PATH, "$SEGATEXD_PID_PATH", [The location of the pidfile used for checking availability of the segatexd.])
+AC_SUBST(SEGATEXD_PID_PATH)
 
 # where is the socket used for communication
 AC_ARG_WITH(segatexd-socket,

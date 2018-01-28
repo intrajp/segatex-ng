@@ -28,8 +28,11 @@
 */
 #define LIKE_PRINTF(format_idx, arg_idx) /* no attribute */
 
-/* this is a function of libselinux */
+/* configuration file of this library */
+static const char *fname = "/etc/segatexd.conf";
+static const char *pid_file_name = "/var/run/segatexd/segatexd.pid";
 
+/* this is a function of libselinux */
 int is_selinux_enabled ( );
 
 #endif

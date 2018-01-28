@@ -1,3 +1,4 @@
+* add sending file from agent to server 
 * add network functionality which does something useful 
 * add syslog functionality 
 * add client program 

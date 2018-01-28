@@ -57,7 +57,7 @@
 #include "cfg.c"
 
 static int running = 0;
-static int delay = 120;
+//static int delay = 120;
 static int counter = 0;
 //static char *pid_file_name = "/var/run/segatexd/segatexd.pid";
 static int pid_fd = -1;
@@ -74,7 +74,7 @@ static void daemonize ( )
 {
     pid_t pid = 0;
     pid_t pid2 = 0;
-    int fd;
+    //int fd;
 
     /* Fork off the parent process */
     pid = fork ( );
