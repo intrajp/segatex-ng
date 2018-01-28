@@ -1,8 +1,7 @@
 /*
- *  main.h - header file for main.c 
- *  This file contains the contents of segatex-ng.
+ *  tcp_server.h - definition of functions for tcp_server 
  *
- *  Copyright (C) 2017 Shintaro Fujiwara
+ *  Copyright (C) 2018 Shintaro Fujiwara 
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -20,19 +19,11 @@
  *  02110-1301 USA
 */
 
-#ifndef SEGATEXD__MAIN_H
-#define SEGATEXD__MAIN_H
+#ifndef SEGATEXD__TCP_SERVER_H
+#define SEGATEXD__TCP_SERVER_H 1
 
-/*  this is used to add extra format checking to the function calls as if this
- *  was a printf()-like function
-*/
-#define LIKE_PRINTF(format_idx, arg_idx) /* no attribute */
+/* tcp server function for segatexd */
 
-/* configuration file of this library */
-static const char *fname = "/etc/segatexd.conf";
-static const char *pid_file_name = "/var/run/segatexd/segatexd.pid";
-
-/* this is a function of libselinux */
-int is_selinux_enabled ( );
+void tcp_server ( void );
 
 #endif

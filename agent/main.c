@@ -31,18 +31,22 @@
 #include <ifaddrs.h>
 #include <unistd.h>
 #include <linux/if_link.h>
+#include "../segatexd.h"
+#include "../common/message.c"
+/* this should be the last, or at least after message.c */
+#include "tcp_client.c" 
 
 int main ( int argc, char *argv [ ] )
 {
     puts ( "-------- This is segatexd-agent --------" );
-    const char *app_name_agent = "segatexd-agent";
+    //const char *app_name_agent = "segatexd-agent";
 
     struct ifaddrs *ifaddr, *ifa;
     int family, s, n;
     char host [ NI_MAXHOST ];
 
-    int x;
-    x = NI_MAXHOST;
+    //int x;
+    //x = NI_MAXHOST;
 
     //printf ("NI_MAXHOST:%d\n", x);/* this is 1025 */
 
@@ -98,6 +102,9 @@ int main ( int argc, char *argv [ ] )
     }
 
     freeifaddrs ( ifaddr );
+
+    /* now test the tcp_client feature */
+    tcp_client ( );
 
     puts ( "-------- End This is segatexd-agent --------" );
 

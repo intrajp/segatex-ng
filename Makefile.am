@@ -3,10 +3,11 @@
 SUBDIRS = server agent
 
 SEGATEXD_CONF_PATH = @SEGATEXD_CONF_PATH@
+SEGATEXD_DATA_PATH = @SEGATEXD_DATA_PATH@
 SEGATEXD_PIDFILE = @SEGATEXD_PIDFILE@
 
-install-data-local: install-segatexd_conf
-uninstall-local: uninstall-segatexd_conf
+install-data-local: install-segatexd_conf install-segatexd_data
+uninstall-local: uninstall-segatexd_conf uninstall-segatexd_data uninstall-segatexd_pid
 
 # install a default configuration file if it is not already there
 install-segatexd_conf:
@@ -20,6 +21,22 @@ install-segatexd_conf:
 uninstall-segatexd_conf:
 	-rm -f $(DESTDIR)$(SEGATEXD_CONF_PATH)
 
-# create directory for pidfile 
+# install a tcp send data file if it is not already there
+install-segatexd_data:
+	@if [ -f $(DESTDIR)$(SEGATEXD_DATA_PATH) ]; then \
+            echo "Data file will be overritten."; \
+            $(INSTALL) -m 644 $(srcdir)/segatexd_tcp_send_data.txt $(DESTDIR)$(SEGATEXD_DATA_PATH); \
+	else \
+            $(mkinstalldirs) `dirname $(DESTDIR)$(SEGATEXD_DATA_PATH)`; \
+            $(INSTALL) -m 644 $(srcdir)/segatexd_tcp_send_data.txt $(DESTDIR)$(SEGATEXD_DATA_PATH); \
+	fi
+
+uninstall-segatexd_data:
+	-rm -rf $(DESTDIR)$(SEGATEXD_DATA_PATH)
+
+uninstall-segatexd_pid:
+	-rm -rf $(DESTDIR)$(SEGATEXD_PID_PATH)
+
+# create directory for pidfile and data
 install-data-hook:
 	$(MKDIR_P) $(DESTDIR)/var/run/segatexd
