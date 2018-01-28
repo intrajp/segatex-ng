@@ -27,7 +27,7 @@ install-segatexd_data:
             echo "Data file will be overritten."; \
             $(INSTALL) -m 644 $(srcdir)/segatexd_tcp_send_data.txt $(DESTDIR)$(SEGATEXD_DATA_PATH); \
 	else \
-            $(mkinstalldirs) `dirname $(DESTDIR)$(SEGATEXD_DATA_PATH)`; \
+            $(MKDIR_P) $(DESTDIR)$(SEGATEXD_DATA_PATH); \
             $(INSTALL) -m 644 $(srcdir)/segatexd_tcp_send_data.txt $(DESTDIR)$(SEGATEXD_DATA_PATH); \
 	fi
 
