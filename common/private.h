@@ -120,14 +120,14 @@ struct segatexd_remote_message_wrapper {
 
 /* General */
 /* Internal syslog messaging */
-void segatex_msg(int priority, const char *fmt, ...) 
+void segatex_msg ( int priority, const char *fmt, ... ) 
 #ifdef __GNUC__
 	__attribute__ ((format (printf, 2, 3)));
 #else
 	;
 #endif
 
-extern int segatex_send(int fd, int type, const void *data, unsigned int size);
+extern int segatex_send (int fd, int type, const void *data, unsigned int size );
 
 SEGATEX_HIDDEN_START
 

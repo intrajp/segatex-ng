@@ -57,10 +57,20 @@ UINSTALLATION
 
 HOW TO USE 
 ==================
+server functionality
 
-  # segatexd -d
+  # segatexd -d | --daemon
 
   Only root can use this program.
+
+  Stopping
+
+  # segatexd -s | --stop
+
+agent functionality
+
+  $ cd agent
+  $ ./segatexd-agent
 
 CONFIGURATION
 =============

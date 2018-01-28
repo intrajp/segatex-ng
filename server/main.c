@@ -37,6 +37,8 @@
 #include "daemonize.c"
 #include "tcp_server.c"
 
+#define SIG_VALUE 99
+
 /* brief Print help for this application */
 
 void print_help ( void )
@@ -130,7 +132,6 @@ int main ( int argc, char *argv [ ] )
     char *log_file_name = NULL;
     int start_daemonized = 0;
     int duplicate_value = 0;
-    char line [ MAX_LINE_LENGTH ];
 
     /* Try to process all command line arguments */
     while ( ( value = getopt_long(argc, argv, "trsdh::", long_options, &option_index ) ) != - 1 ) {
@@ -183,14 +184,13 @@ int main ( int argc, char *argv [ ] )
     /* Tell kernel not to kill us */
     avoid_oom_killer ( );
 
-    int SIG_VALUE;
     printf("SIG_VALUE is %d\n",SIG_VALUE);
 
     /* Daemon will handle two signals */
     signal ( SIGINT, handle_signal );
     signal ( SIGHUP, handle_signal );
 
-    int i,j;
+    int i;
 
     i = is_selinux_enabled ( );
 
