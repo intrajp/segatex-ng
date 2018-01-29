@@ -29,6 +29,13 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
    02110-1301 USA
 
+REQUIREMENT
+==================
+segatexd needs these packages to be build.
+
+- libselinux-devel
+- audit-libs-devel
+
 HOW TO BUILD
 ==================
 segatexd uses autoconf and automake for building. Installing

@@ -180,13 +180,13 @@ int tcp_server ( )
         //write ( conn_fd, send_buff, ( int ) strlen ( send_buff ) );
         //get_file_name ( conn_fd, FILE_NAME_SEND );
         send_file ( conn_fd, FILE_NAME_SEND );
+    }
 
-        /* closing tcp session*/
-        if ( close ( conn_fd ) < 0 )
-        {
-            perror ( "socket conn_fd close error" );
-            exit ( EXIT_FAILURE );
-        }
+    /* closing tcp session*/
+    if ( close ( conn_fd ) < 0 )
+    {
+        perror ( "socket conn_fd close error" );
+        exit ( EXIT_FAILURE );
     }
 
     /* closing listening socket */

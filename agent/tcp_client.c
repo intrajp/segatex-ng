@@ -60,7 +60,7 @@ int recv_file ( int sock )
     strncpy ( file_name_receive, FILE_NAME_RECV, 20 );
     strftime ( f_t, sizeof ( f_t ), "_%Y%m%d%H%M%S.txt", timenow );
  
-     strncat ( file_name_receive, f_t, sizeof ( f_t ) );
+    strncat ( file_name_receive, f_t, sizeof ( f_t ) );
 
     char send_str [ MAX_SEND_BUFF ]; /* message to be sent to server*/
 
@@ -96,17 +96,21 @@ int recv_file ( int sock )
     {
         recv_count++;
         rcvd_file_size += rcvd_bytes;
+
         if ( write ( f, recv_str, rcvd_bytes ) < 0 )
         {
             perror( "error writing to file" );
             return ( EXIT_FAILURE );
         }
+
+        /* break if rcvd_bytes is less than MAX_RECV_BUFF, meaning the end */
+        if ( rcvd_bytes < MAX_RECV_BUFF )
+           break; 
     }
 
     close ( f ); /* close file*/
 
     //segatex_msg ( LOG_NOTICE, "Client Received: %d bytes in %d recv(s)\n", rcvd_file_size,
-    //printf ( "Client Received: %d bytes in %d recv(s)\n", rcvd_file_size,
     printf ( "Client Received: %ld bytes in %d recv(s)\n", rcvd_file_size,
             recv_count);
 
