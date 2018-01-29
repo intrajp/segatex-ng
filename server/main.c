@@ -261,8 +261,6 @@ int main ( int argc, char *argv [ ] )
         tcp_server ( );
         /* end Never ending loop of server */
 
-        /* sleep for a while */
-        //sleep ( delay );
     }
 
     close_daemon ( );
