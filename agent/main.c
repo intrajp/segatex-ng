@@ -103,7 +103,7 @@ int main ( int argc, char *argv [ ] )
 
     freeifaddrs ( ifaddr );
 
-    /* now test the tcp_client feature */
+    /* now tcp_client feature ( receiving file from the server )*/
     tcp_client ( );
 
     puts ( "-------- End This is segatexd-agent --------" );
