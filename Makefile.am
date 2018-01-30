@@ -6,7 +6,7 @@ SEGATEXD_CONF_PATH = @SEGATEXD_CONF_PATH@
 SEGATEXD_DATA_PATH = @SEGATEXD_DATA_PATH@
 SEGATEXD_PIDFILE = @SEGATEXD_PIDFILE@
 
-install-data-local: install-segatexd_conf install-segatexd_data
+install-data-local: install-segatexd_conf install-segatexd_data install-data-hook
 uninstall-local: uninstall-segatexd_conf uninstall-segatexd_data uninstall-segatexd_pid
 
 # install a default configuration file if it is not already there

@@ -97,6 +97,10 @@ int send_file ( int sock, const char * file_name )
             }
             sent_count++;
             sent_file_size += sent_bytes;
+            /* newly added */
+            if( sent_bytes < MAX_RECV_BUFF )
+                break;
+            /* end newly added */
         }
         close ( f );
     }
@@ -120,7 +124,7 @@ int tcp_server ( )
     int conn_fd;
     char send_buff [ 1025 ];
     char print_addr [ 30 ];
-    strncpy ( send_buff, "This is segatexd tcp server", 1024 );
+    strncpy ( send_buff, "segatexd_tcp_send_data.txt", 1024 );
     int backlog = 10;
 
     /* setting socket */
@@ -177,7 +181,8 @@ int tcp_server ( )
                 print_addr, ntohs(cli_addr.sin_port) );
 
         /* sending message some bytes */
-        //write ( conn_fd, send_buff, ( int ) strlen ( send_buff ) );
+        write ( conn_fd, send_buff, ( int ) strlen ( send_buff ) );
+
         //get_file_name ( conn_fd, FILE_NAME_SEND );
         send_file ( conn_fd, FILE_NAME_SEND );
     }

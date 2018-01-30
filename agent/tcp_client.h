@@ -1,7 +1,7 @@
 /*
  *  tcp_client.h - definition of functions for tcp_client 
  *
- *  Copyright (C) 2018 Shintaro Fujiwara 
+ *  Copyright (C) 2017-2018 Shintaro Fujiwara
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public

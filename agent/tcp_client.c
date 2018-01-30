@@ -2,7 +2,7 @@
  *  tcp_client.c - functions on tcp client for segatex-ng.
  *  This file contains the contents of segatex-ng.
  *
- *  Copyright (C) 2018 Shintaro Fujiwara 
+ *  Copyright (C) 2017-2018 Shintaro Fujiwara
  *
  *  Many thanks to
  *  fac(ulty).ksu.edu.sa/mdahshan/CEN463FA09/07-file_transfer_ex.pdf
@@ -43,25 +43,43 @@
 #define MAX_SEND_BUFF 256  
 #define PORT_NUMBER 13579  
 #define SERVER_ADDRESS "127.0.0.1" 
-#define FILE_NAME_RECV "/tmp/segatex_received" 
+
+char file_name_receive [ MAX_RECV_BUFF ] = "/tmp/";
+char real_file_name [ MAX_RECV_BUFF + 1 ];
+
+/* This function receives file name from the tcp server */
+
+int recv_file_name ( int sock_fd )
+{
+    char recvBuff [ MAX_RECV_BUFF ];
+    memset ( recvBuff, '\0' ,sizeof ( recvBuff ) );
+ 
+    //segatex_msg ( LOG_NOTICE, "connected to:%s:%d ..\n", SERVER_ADDRESS, PORT_NUMBER );
+    printf ( "connected to:%s:%d ..\n", SERVER_ADDRESS, PORT_NUMBER );
+
+    //receive a reply from the server
+    if ( recv ( sock_fd, recvBuff, MAX_RECV_BUFF, 0 ) < 0 )
+    {
+        puts ( "recv failed" );
+    }
+    //now copy the result to the string
+    strncpy ( real_file_name, recvBuff, MAX_RECV_BUFF ); 
+
+    return ( 0 );
+}
 
 /* This function receives file from tcp server*/
-//int recv_file ( int sock, char* file_name )
-int recv_file ( int sock )
-{
-    char file_name_receive [ 255 ] = {0};
-    char f_t [ 40 ];
-    memset ( file_name_receive, '\0', 255);
-    memset ( f_t, '\0', 40 );
-    struct tm *timenow;
-    time_t now = time ( NULL );
-    timenow = localtime ( &now );
-    //int str_len = MAX_FILE_NAME_LENGTH;
-    strncpy ( file_name_receive, FILE_NAME_RECV, 20 );
-    strftime ( f_t, sizeof ( f_t ), "_%Y%m%d%H%M%S.txt", timenow );
- 
-    strncat ( file_name_receive, f_t, sizeof ( f_t ) );
 
+int recv_file ( int sock, char *real_file_name )
+{
+    /* creating file name */
+    char f_t [ 40 ];
+    memset ( f_t, '\0', 40 );
+
+    printf ( "file_name:%s\n",real_file_name );
+    strncat ( file_name_receive, real_file_name, 250 );
+    printf ( "file_name_receive:%s\n",file_name_receive );
+ 
     char send_str [ MAX_SEND_BUFF ]; /* message to be sent to server*/
 
     int f; /* file handle for receiving file*/
@@ -119,7 +137,7 @@ int recv_file ( int sock )
 
 /* This function do job as it says */
 
-int tcp_client ( )
+int tcp_client ( void )
 {
     int sock_fd = 0;
     struct sockaddr_in srv_addr;
@@ -147,18 +165,28 @@ int tcp_client ( )
     /* connecting the server */
     if ( connect ( sock_fd, ( struct sockaddr * ) &srv_addr, sizeof ( srv_addr ) ) < 0 )
     {
-        segatex_msg ( LOG_NOTICE, "\n Error: Connect Failed \n" ); 
+        //segatex_msg ( LOG_NOTICE, "\n Error: Connect Failed \n" ); 
+        printf("\n Error: Connect Failed on file recv\n"); 
         return ( EXIT_FAILURE );
     }
-    printf ( "tcp_client() middle part\n" );
 
     //segatex_msg ( LOG_NOTICE, "connected to:%s:%d ..\n", SERVER_ADDRESS, PORT_NUMBER );
-    printf ( "connected to:%s:%d ..\n", SERVER_ADDRESS, PORT_NUMBER );
+    printf ( "connected for file receive to:%s:%d ..\n", SERVER_ADDRESS, PORT_NUMBER );
 
     /* receiving file */
-    recv_file ( sock_fd );
+    /* first, getting file name from server */
+    if (recv_file_name ( sock_fd ) == 0 )
+    {
+        printf ("real_file_name:%s\n", real_file_name);
+    }
+    else
+    {
+        puts("no file name received");
+        return 0;
+    }
 
-    printf ( "recv_file ended\n" );
+    /* next, getting contents from the server */
+    recv_file ( sock_fd, real_file_name);
 
     /* close socket*/
     if(close(sock_fd) < 0)

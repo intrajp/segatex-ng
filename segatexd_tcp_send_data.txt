@@ -1,3 +1,7 @@
+2018-01-31 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
+    Fixed agent program get file from server /usr/share/segatexd as its own name to /tmp  
+2018-01-29 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
+    Fixed agent program properly break from the loop 
 2018-01-28 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
     Fixed to send file from server to agent 
 2018-01-27 Shintaro Fujiwara <shintaro.fujiwara@gmail.com>
