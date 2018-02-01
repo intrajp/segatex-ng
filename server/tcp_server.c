@@ -37,7 +37,6 @@
 #define MAX_RECV_BUFF 256  
 #define MAX_SEND_BUFF 256  
 #define PORT_NUMBER 13579  
-#define FILE_NAME_SEND "/usr/share/segatexd/segatexd_tcp_send_data.txt" 
 
 /*  This function get file_name and store it to char array,
  *  do nothing, not used for the future use only
@@ -61,6 +60,7 @@ void get_file_name ( int sock, char *file_name )
 
 int send_file ( int sock, const char * file_name )
 {
+    //segatex_msg ( LOG_NOTICE, "I will send this file: %s\n", file_name );
     int sent_count;
     ssize_t read_bytes,
             sent_bytes,
@@ -86,7 +86,7 @@ int send_file ( int sock, const char * file_name )
     }
     else /* open file successful */
     {
-        segatex_msg ( LOG_NOTICE, "Sending file: %s\n", file_name );
+        //segatex_msg ( LOG_NOTICE, "Sending file: %s\n", file_name );
         while ( ( read_bytes = read ( f, send_buff, MAX_RECV_BUFF ) ) > 0 )
         {
             if ( ( sent_bytes = send ( sock, send_buff, read_bytes, 0 ) )
@@ -122,9 +122,7 @@ int tcp_server ( )
     struct sockaddr_in cli_addr;
     int len;
     int conn_fd;
-    char send_buff [ 1025 ];
     char print_addr [ 30 ];
-    strncpy ( send_buff, "segatexd_tcp_send_data.txt", 1024 );
     int backlog = 10;
 
     /* setting socket */
@@ -164,6 +162,8 @@ int tcp_server ( )
 
     while ( 1 )
     {
+        char file_name_send [ 300 ] = "/usr/share/segatexd/\0";
+
         /* accepting the connection from tcp client */
         len = sizeof ( cli_addr );
 
@@ -181,10 +181,12 @@ int tcp_server ( )
                 print_addr, ntohs(cli_addr.sin_port) );
 
         /* sending message some bytes */
-        write ( conn_fd, send_buff, ( int ) strlen ( send_buff ) );
+        write ( conn_fd, segatexd_cfg->send_file, ( int ) strlen ( segatexd_cfg->send_file ) );
 
-        //get_file_name ( conn_fd, FILE_NAME_SEND );
-        send_file ( conn_fd, FILE_NAME_SEND );
+        strncat ( file_name_send, segatexd_cfg->send_file, 255 );
+        segatex_msg ( LOG_NOTICE, "file_name_send:%s\n", file_name_send );
+
+        send_file ( conn_fd, file_name_send );
     }
 
     /* closing tcp session*/

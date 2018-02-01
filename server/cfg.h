@@ -28,6 +28,7 @@ struct segatex_ng_config
 {
     /* the number of threads to start */
     int threads;
+    char send_file [ 255 ];
 };
 
 /*  this is a pointer to the global configuration, it should be available

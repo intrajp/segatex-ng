@@ -197,6 +197,9 @@ void handle_signal ( int sig )
     }
     else if (sig == SIGHUP)
     {
+
+        //running = 3;//no good
+
         /*showing this is SIGHUP process*/
         write ( STDOUT_FILENO, msg_sighup, sizeof ( msg_sighup ) - 1 );
         segatex_msg ( LOG_INFO, "%s", msg_sighup );
@@ -207,7 +210,7 @@ void handle_signal ( int sig )
         /* read configfile */
         cfg_read ( fname, segatexd_cfg );
         /*re-daemonize*/
-        daemonize ( );
+        //daemonize ( );// right now, there is no meaning here
         /* Reset signal handling to default behavior */
         signal ( SIGINT, SIG_DFL );
     }
