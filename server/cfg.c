@@ -36,24 +36,11 @@
 #include "../segatexd.h"
 #include "cfg.h"
 
-/*
- *  initializing object member contents
- *  this could be overrided by another function
-*/
-/*
-struct segatex_ng_config segatexd_cfg_raw = 
-    {
-        10, // number of threads
-    };
-*/
-
-//struct segatex_ng_config *segatexd_cfg = &segatexd_cfg_raw;
-
 /* should be set to NULL, this will be checked in cfg_init() */
 struct segatex_ng_config *segatexd_cfg = NULL;
 
-const char msg_cfg_read [ ] ="cfg_read was called by SIG_VALUE !\n";
-const char msg_cfg_read_ok [ ] ="file value was reloaded by SIG_VALUE !\n";
+const char msg_cfg_read [ 36 ] = "cfg_read was called by SIG_VALUE !\n";
+const char msg_cfg_read_ok [ 40 ] = "file value was reloaded by SIG_VALUE !\n";
 
 /* the maximum line length in the configuration file */
 #define MAX_LINE_LENGTH    4096
@@ -75,6 +62,7 @@ void cfg_defaults ( struct segatex_ng_config *cfg )
     printf("cfg_defaults was called !\n");
 
     cfg->threads = 5;
+    strncpy ( cfg->send_file, "segatexd_tcp_send_data.txt", 255 );
 }
 
 /* check that the condition is true and otherwise log an error
@@ -104,11 +92,14 @@ static char *get_token ( char **line, char *buf, size_t buflen )
 {
     //for debug
     //printf("get_token was called !\n");
+    //printf("buf:%s\n", buf);
 
     size_t len;
 
     if ( ( line == NULL ) || ( *line == NULL ) || ( **line == '\0' ) || ( buf == NULL ) )
         return NULL;
+
+    //printf("get_token 2\n");
 
     /* find the beginning and length of the token */
 
@@ -175,7 +166,7 @@ static void get_eol ( const char *filename, int lnr,
                     const char *keyword, char **line )
 {
     //for debug
-    //printf("get_eol was called !\n");
+    printf("get_eol was called !\n");
 
     if ( ( line != NULL ) && ( *line != NULL ) && ( **line != '\0' ) )
     {
@@ -188,16 +179,14 @@ static void get_eol ( const char *filename, int lnr,
 
 void cfg_read ( const char *filename, struct segatex_ng_config *cfg )
 {
-    char line_break [ ]= "\n" ;
+    char line_break [ 5 ]= "\n" ;
     char struct_str [ MAX_LINE_LENGTH ] = "";
     char struct_pre [ 17 ] = "cfg->threads is ";
     char threads_str [ 24 ];
-    char filename_str [ MAX_LINE_LENGTH ];
-    char filename_pre [ 14 ] = "file name is ";
 
-    strncpy ( filename_str, filename_pre, 16 );
-    strcat ( filename_str, filename );
-    strcat ( filename_str, line_break );
+    char filename_str [ MAX_LINE_LENGTH ] = "";
+    char filename_pre [ 19 ] = "cfg->send_file is ";
+
 
     /*if signal was caught, printf is unsafe, so change it to write*/
     if ( SIG_VALUE == 2 )
@@ -215,7 +204,6 @@ void cfg_read ( const char *filename, struct segatex_ng_config *cfg )
     char linebuf [ MAX_LINE_LENGTH ];
     char *line;
     char keyword [ 32 ];
-    //char token [ 64 ];
     int i;
 
     /* open the file */
@@ -262,7 +250,7 @@ void cfg_read ( const char *filename, struct segatex_ng_config *cfg )
     }
 
     /* open config file */
-    if ( ( fp=fopen ( filename,"r" ) ) == NULL )
+    if ( ( fp = fopen ( filename,"r" ) ) == NULL )
     {
         segatex_msg ( LOG_ERR, "cannot open config file (%s): %s", filename, strerror ( errno ) );
         close ( fd );
@@ -288,6 +276,7 @@ void cfg_read ( const char *filename, struct segatex_ng_config *cfg )
         /* strip trailing spaces */
         for ( i--; ( i > 0 ) && isspace ( line [ i - 1 ] ); i-- )
             line [ i - 1 ] = '\0';
+
         /* get keyword from line and ignore empty lines */
         if ( get_token ( &line, keyword, sizeof ( keyword ) ) == NULL )
             continue;
@@ -298,6 +287,10 @@ void cfg_read ( const char *filename, struct segatex_ng_config *cfg )
         {
             cfg->threads = get_int ( filename, lnr, keyword, &line );
             get_eol ( filename, lnr, keyword, &line );
+        }
+        else if ( strcmp ( keyword, "send_file" ) == 0 )
+        {
+            strncpy ( cfg->send_file, line, 255 );
         }
         /* fallthrough */
         else
@@ -314,16 +307,26 @@ void cfg_read ( const char *filename, struct segatex_ng_config *cfg )
     strcat ( struct_str, threads_str );
     strcat ( struct_str, line_break );
 
+    strncpy ( filename_str, filename_pre, 19 );
+    strcat ( filename_str, cfg->send_file );
+    strcat ( filename_str, line_break );
+
+
     /*if signal was caught, printf is unsafe, so change it to write*/
     //show file contents
+    //
+    //XXX have to fix, when reload is done, file name still the same...
+    //
     if ( SIG_VALUE == 2 )
     {
         write ( STDOUT_FILENO, msg_cfg_read_ok, sizeof ( msg_cfg_read_ok ) );
         write ( STDOUT_FILENO, struct_str, sizeof ( struct_str ) - 1 );
+        write ( STDOUT_FILENO, filename_str, sizeof ( filename_str ) - 1 );
     }
     else
     {
         printf ( "cfg->threads is %d\n", cfg->threads );
+        printf ( "cfg->send_file is %s\n", cfg->send_file );
     }
     /* we're done reading file, close */
     fclose ( fp );
